@@ -37,6 +37,10 @@ Route::group([
             Route::get('getTags/{product}', 'ProductController@getTags');
             Route::delete('deleteTag', 'ProductController@deleteTag');
             Route::post('updateProduct', 'ProductController@updateProduct');
+
+            //supplier management
+            Route::get('getSupplier', 'SupplierController@getSupplier');
+            Route::get('searchSupplier/{search}', 'SupplierController@searchSupplier');
         });
     });
 });
