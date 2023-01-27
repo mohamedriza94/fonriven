@@ -41,6 +41,7 @@ Route::group([
             //supplier management
             Route::get('getSupplier', 'SupplierController@getSupplier');
             Route::get('searchSupplier/{search}', 'SupplierController@searchSupplier');
+            Route::get('getOneSupplier/{id}', 'SupplierController@getOneSupplier');
         });
     });
 });

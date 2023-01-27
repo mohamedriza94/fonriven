@@ -153,6 +153,14 @@
                         </div>
                     </a>
                 </li>
+                
+                <li class="menu {{ (\Request::route()->getName() == 'admin.users') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users') }}" aria-expanded="false" class="dropdown-toggle">
+                        <div class="">
+                            <span class="text-capitalize"><i class="fa-solid fa-user" style="width:50px; height:100%;"></i>users</span>
+                        </div>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

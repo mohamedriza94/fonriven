@@ -16,4 +16,9 @@ class DashboardController extends Controller
     {
         return view('admin.dashboard.supplierRequest');
     }
+
+    public function users(Request $request)
+    {
+        return view('admin.dashboard.users');
+    }
 }

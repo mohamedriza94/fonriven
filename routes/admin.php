@@ -14,11 +14,17 @@ Route::group([
             //page routes
             Route::get('/', 'DashboardController@index')->name('admin.dashboard');
             Route::get('supplier', 'DashboardController@supplierRequest')->name('admin.supplierRequest');
+            Route::get('users', 'DashboardController@users')->name('admin.users');
 
             //supplier requests route
             Route::get('getRequests/{limit}', 'SupplierRequestController@getRequests');
             Route::post('takeActionToRequest', 'SupplierRequestController@takeActionToRequest');
             Route::get('viewRequest/{id}', 'SupplierRequestController@viewRequest');
+
+            //user table
+            Route::get('getUsers/{limit}/{type}', 'UserController@getUsers');
+            Route::get('searchUsers/{search}', 'UserController@searchUsers');
+            Route::post('changeStatus', 'UserController@changeStatus');
         });
     });
 });

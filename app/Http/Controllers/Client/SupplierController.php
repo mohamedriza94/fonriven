@@ -20,6 +20,13 @@ class SupplierController extends Controller
 
     public function searchSupplier($search)
     {
-
+    }
+    
+    public function getOneSupplier($id)
+    {
+        $clients = Client::where('id','=',$id)->first();
+        return response()->json([
+            'clients'=>$clients,
+        ]);
     }
 }

@@ -59,6 +59,12 @@
                                     {{-- as a guest --}}
                                     @guest
                                     <li class="nk-menu">
+                                        <a class="nk-menu-link">
+                                            <span class="nk-menu-text">Make an Inquiry</span>
+                                        </a>
+                                    </li><!-- .nk-menu-item -->
+
+                                    <li class="nk-menu">
                                         <a data-bs-toggle="modal" data-bs-target="#modalSignup" class="nk-menu-link">
                                             <span class="nk-menu-text">Sign Up</span>
                                         </a>
