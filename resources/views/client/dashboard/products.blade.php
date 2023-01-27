@@ -37,80 +37,26 @@
                     <div class="card card-bordered">
                         <div class="card-inner-group">
                             <div class="card-inner p-0">
-                                <div class="nk-tb-list" id="productList">
-                                    <div class="nk-tb-item nk-tb-head">
-                                        <div class="nk-tb-col tb-col-sm"><span>Thumbnail</span></div>
-                                        <div class="nk-tb-col"><span>Name</span></div>
-                                        <div class="nk-tb-col"><span>Unit Price (LKR)</span></div>
-                                        <div class="nk-tb-col"><span>status</span></div>
-                                        <div class="nk-tb-col"><span>Category</span></div>
-                                        <div class="nk-tb-col"><span>Action</span></div>
-                                    </div><!-- .nk-tb-item -->
-
-
-
-
-
-
-
-
-
-
-
-                                    
-
-
-                                    <div class="nk-tb-item">
-                                        <div class="nk-tb-col tb-col-sm">
-                                            <span class="tb-product">
-                                                <img src="./images/product/a.png" alt="" class="thumb">
-                                            </span>
-                                        </div>
-                                        <div class="nk-tb-col">
-                                            <span class="tb-sub">Sample Name</span>
-                                        </div>
-                                        <div class="nk-tb-col">
-                                            <span class="tb-lead">1500</span>
-                                        </div>
-                                        <div class="nk-tb-col">
-                                            <span class="tb-sub"><span class="badge bg-success">Active</span></span>
-                                        </div>
-                                        <div class="nk-tb-col tb-col-md">
-                                            <span class="tb-lead">Men's Clothing</span>
-                                        </div>
-                                        <div class="nk-tb-col tb-col-md">
-                                            <div class="btn-group btn-group-sm" aria-label="Basic example">
-                                                <button type="button" class="btn btn-outline-success">Activate</button>
-                                                <button type="button" class="btn btn-dark" data-bs-target="#modalEditProduct" data-bs-toggle="modal">Edit</button>
-                                                <button type="button" class="btn btn-danger">Delete</button>
-                                              </div>
-                                        </div>
-                                    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                </div><!-- .nk-tb-list -->
+                                
+                                <table class="table text-left">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Unit Price (LKR)</th>
+                                            <th scope="col">status</th>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productList">
+                                    </tbody>
+                                </table>
                             </div>
                             <div class="card-inner">
                                 <div class="nk-block-between-md g-3">
                                     <div class="btn-group btn-group-sm" aria-label="Basic example">
-                                        <button type="button" class="btn btn-dim btn-danger">Prev</button>
-                                        <button type="button" class="btn btn-dim btn-success">Next</button>
+                                        <button type="button" id="btnPrev" class="btn btn-dim btn-danger">Prev</button>
+                                        <button type="button" id="btnNext" class="btn btn-dim btn-success">Next</button>
                                     </div>
                                 </div><!-- .nk-block-between -->
                             </div>
@@ -179,7 +125,7 @@
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <div class="form-control-wrap">
-                                                    <img class="form-control" id="chosenPhoto" src="" style="height:100px; object-fit: contain;">
+                                                    <img class="form-control" id="pChosenPhoto" src="" style="height:100px; object-fit: contain;">
                                                 </div>
                                             </div>
                                         </div>
@@ -214,7 +160,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 {{-- modal to edit product --}}
                 <div class="modal fade zoom xl" tabindex="-1" id="modalEditProduct">
                     <div class="modal-dialog modal-lg" role="document">
@@ -311,6 +257,231 @@
                         </div>
                     </div>
                 </div>
+                
+                <script>
+                    $(document).ready(function(){
+                        
+                        getProduct();
+                        
+                        //Add Product
+                        $(document).on('click', '#btnAddProduct', function(e) {
+                            e.preventDefault();
+                            
+                            $('#btnAddProduct').text('Adding...');
+                            
+                            let formData = new FormData($('#addProductForm')[0]);
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ url('client/dashboard/addProduct') }}",
+                                data: formData,
+                                contentType:false,
+                                processData:false,
+                                success: function(response){
+                                    if(response.status==400)
+                                    {
+                                        $.each(response.errors,function(key,err_value){
+                                            $('#errorList').append('<li>'+err_value+'</li>');
+                                        });
+                                        
+                                        $('#btnAddProduct').text('Add Product');
+                                    }
+                                    else
+                                    {
+                                        $('#errorList').html('');
+                                        
+                                        $('#btnAddProduct').removeClass('btn-primary');
+                                        $('#btnAddProduct').addClass('btn-success');
+                                        $('#btnAddProduct').text('Added!');
+                                        
+                                        setTimeout(function(){
+                                            $('#btnAddProduct').removeClass('btn-success');
+                                            $('#btnAddProduct').addClass('btn-primary');
+                                            $('#btnAddProduct').text('Add Product');
+                                        }, 1000);
+                                        
+                                        $('#pName').val('');
+                                        $('#"').val('');
+                                        $('#pTags').val('');
+                                        $('#pDescription').val('');
+                                    }
+                                }
+                            });
+                        });
+                        
+                        $("#pThumbnail").change(function(){
+                            var reader = new FileReader();
+                            reader.onload = function(){
+                                var output = document.getElementById('pChosenPhoto');
+                                output.src = reader.result;
+                            };
+                            reader.readAsDataURL(event.target.files[0]);
+                        });
+                        
+                        //limit and offset for pagination
+                        var limit = 0;
+                        $(document).on('click', '#btnNext', function(e) {
+                            
+                            limit = limit + 5;
+                            getProduct();
+                            
+                        });
+                        
+                        $(document).on('click', '#btnPrev', function(e) {
+                            
+                            limit = limit - 5;
+                            
+                            if(limit < 0)
+                            {
+                                limit = 0;
+                            }
+                            
+                            getProduct();
+                            
+                        });
+                        
+                        //read
+                        function getProduct()
+                        {
+                            var url = '{{ url("client/dashboard/getProduct/:limit") }}';
+                            url = url.replace(':limit', limit);
+                            
+                            $.ajax({
+                                type: "GET",
+                                url:url,
+                                dataType:"json",
+                                success:function(response){
+                                    
+                                    $('#productList').html('');
+                                    
+                                    $.each(response.products,function(key,item){
+                                        
+                                        var name = item.name;
+                                        var name = name.slice(0,15)+'...';
+                                        
+                                        var status = '';
+                                        var button = '';
+                                        if(item.status == 'active')
+                                        {
+                                            status = '<span class="badge bg-success">Active</span>';
+                                            
+                                            button = '<div class="btn-group btn-group-sm">\
+                                                <button id="btnDeactivate" value="'+item.no+'" class="btn btn-outline-danger">Deactivate</button>\
+                                                <button id="btnEdit" value="'+item.no+'" class="btn btn-dark" data-bs-target="#modalEditProduct" data-bs-toggle="modal">Edit</button>\
+                                                <button id="btnDelete" value="'+item.no+'" class="btn btn-danger">Delete</button>\
+                                            </div>';
+                                        }
+                                        else
+                                        {
+                                            status = '<span class="badge bg-danger">Inactive</span>';
+                                            
+                                            button = '<div class="btn-group btn-group-sm">\
+                                                <button id="btnActivate" value="'+item.no+'" class="btn btn-outline-success">Activate</button>\
+                                                <button id="btnEdit" value="'+item.no+'" class="btn btn-dark" data-bs-target="#modalEditProduct" data-bs-toggle="modal">Edit</button>\
+                                                <button id="btnDelete" value="'+item.no+'" class="btn btn-danger">Delete</button>\
+                                            </div>';
+                                        }
+                                        
+                                        
+                                        
+                                        $('#productList').append('<tr>\
+                                            <td>\
+                                                <img src="'+item.thumbnail+'" style="height:40px; object-fit: contain;">&nbsp;\
+                                                '+name+'\
+                                            </td>\
+                                            <td>\
+                                                '+item.price+'\
+                                            </td>\
+                                            <td>\
+                                                '+status+'\
+                                            </td>\
+                                            <td>\
+                                                '+item.category+'\
+                                            </td>\
+                                            <td>\
+                                                '+button+'\
+                                            </td>\
+                                        </tr>\
+                                        ');
+                                    });
+                                }
+                            });
+                        }
+                        
+                        //activate
+                        $(document).on('click', '#btnActivate', function(e) {
+                            
+                            e.preventDefault();
+                            var no = $(this).val();
+                            var status = 'active';
+                            
+                            var data = {
+                                'no' : no,
+                                'status' : status
+                            }
+                            
+                            var url = '{{ url("client/dashboard/changeStatus") }}';
+                            
+                            $.ajax({
+                                type:"POST",
+                                url: url,
+                                data:data,
+                                dataType:"json",
+                                success: function(response){
+                                    getProduct();
+                                }
+                            });
+                        });
+                        
+                        //deactivate
+                        $(document).on('click', '#btnDeactivate', function(e) {
+                            
+                            e.preventDefault();
+                            var no = $(this).val();
+                            var status = 'inactive';
+                            
+                            var data = {
+                                'no' : no,
+                                'status' : status
+                            }
+                            
+                            var url = '{{ url("client/dashboard/changeStatus") }}';
+                            
+                            $.ajax({
+                                type:"POST",
+                                url: url,
+                                data:data,
+                                dataType:"json",
+                                success: function(response){
+                                    getProduct();
+                                }
+                            });
+                        });
+                        
+                        //delete
+                        $(document).on('click', '#btnDelete', function(e) {
+                            
+                            e.preventDefault();
+                            var no = $(this).val();
+                            
+                            var data = {
+                                'no' : no,
+                                'status' : status
+                            }
+                            
+                            var url = '{{ url("client/dashboard/deleteProduct") }}';
+                            
+                            $.ajax({
+                                type:"DELETE",
+                                url: url,
+                                data:data,
+                                dataType:"json",
+                                success: function(response){
+                                    getProduct();
+                                }
+                            });
+                        });
+                    });
+                </script>
             </div>
         </div>
     </div>

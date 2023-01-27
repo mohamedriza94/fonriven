@@ -26,6 +26,11 @@ Route::group([
             Route::get('products', 'DashboardController@products')->name('client.products');
             Route::get('messages', 'DashboardController@messages')->name('client.messages');
 
+            //product management
+            Route::post('addProduct', 'ProductController@addProduct');
+            Route::get('getProduct/{limit}', 'ProductController@getProduct');
+            Route::post('changeStatus', 'ProductController@changeStatus');
+            Route::delete('deleteProduct', 'ProductController@deleteProduct');
         });
     });
 });
