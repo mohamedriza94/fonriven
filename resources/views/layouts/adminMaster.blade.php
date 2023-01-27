@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>LOCKHOOD</title>
+    <title>FONRIVEN</title>
     <link rel="icon" type="image/x-icon" href="{{asset('assets/admin/src/assets/img/.ico')}}"/>
     
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
@@ -142,6 +142,14 @@
                     <a href="{{ route('admin.dashboard') }}" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <span class="text-capitalize"><i class="fa-solid fa-home" style="width:50px; height:100%;"></i>dashboard</span>
+                        </div>
+                    </a>
+                </li>
+                
+                <li class="menu {{ (\Request::route()->getName() == 'admin.supplierRequest') ? 'active' : '' }}">
+                    <a href="{{ route('admin.supplierRequest') }}" aria-expanded="false" class="dropdown-toggle">
+                        <div class="">
+                            <span class="text-capitalize"><i class="fa-solid fa-box" style="width:50px; height:100%;"></i>supplier requests</span>
                         </div>
                     </a>
                 </li>

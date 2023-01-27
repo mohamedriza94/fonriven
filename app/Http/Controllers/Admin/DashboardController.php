@@ -11,4 +11,9 @@ class DashboardController extends Controller
     {
         return view('admin.dashboard.index');
     }
+
+    public function supplierRequest(Request $request)
+    {
+        return view('admin.dashboard.supplierRequest');
+    }
 }
