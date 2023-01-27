@@ -26,4 +26,9 @@ class DashboardController extends Controller
     {
         return view('client.dashboard.messages');
     }
+    
+    public function suppliers(Request $request)
+    {
+        return view('client.dashboard.suppliers');
+    }
 }

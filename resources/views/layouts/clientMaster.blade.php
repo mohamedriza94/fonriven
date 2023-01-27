@@ -82,6 +82,15 @@
                                         </a>
                                     </li><!-- .nk-menu-item -->
                                     @endif
+
+                                    {{-- as a buyer --}}
+                                    @if (auth()->guard('client')->user()->role == "buyer")
+                                    <li class="nk-menu">
+                                        <a href="{{ route('client.suppliers') }}" class="nk-menu-link">
+                                            <span class="nk-menu-text">Suppliers</span>
+                                        </a>
+                                    </li><!-- .nk-menu-item -->
+                                    @endif
                                     
                                     <li class="nk-menu">
                                         <a href="{{ route('client.connections') }}" class="nk-menu-link">

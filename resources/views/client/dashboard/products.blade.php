@@ -180,7 +180,7 @@
                                 <div class="preview-block">
                                     
                                     <form class="row g-3" method="post" enctype="multipart/form-data" id="editProductForm"> 
-                                        <input type="hidden" id="productId" name="id">
+                                        <input type="hidden" id="productId" name="no">
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label class="form-label" for="product-title">Product Name</label>
@@ -213,7 +213,7 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="tags">Tags (Keep a space between each tag)</label>
+                                                <label class="form-label" for="tags">Add More Tags (Keep a space between each tag)</label>
                                                 <div class="form-control-wrap">
                                                     <input type="text" class="form-control" name="tag" id="up_product_tag">
                                                 </div>
@@ -249,6 +249,21 @@
                                             <button class="btn btn-primary" type="submit" id="btnUpdateProduct"></em><span>Save Changes</span></button>
                                         </div>
                                     </form>
+                                    
+                                    {{-- tags --}}
+                                    <hr>
+                                    <h4>Tags</h4>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Tag</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tagList">
+                                            
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                             <div class="modal-footer bg-light">
@@ -261,6 +276,7 @@
                 <script>
                     $(document).ready(function(){
                         
+                        var publicURL = '{{ url("client/dashboard/getProduct/:limit") }}';
                         getProduct();
                         
                         //Add Product
@@ -299,8 +315,10 @@
                                             $('#btnAddProduct').text('Add Product');
                                         }, 1000);
                                         
+                                        getProduct();
+                                        
                                         $('#pName').val('');
-                                        $('#"').val('');
+                                        $('#pPrice').val('');
                                         $('#pTags').val('');
                                         $('#pDescription').val('');
                                     }
@@ -312,6 +330,15 @@
                             var reader = new FileReader();
                             reader.onload = function(){
                                 var output = document.getElementById('pChosenPhoto');
+                                output.src = reader.result;
+                            };
+                            reader.readAsDataURL(event.target.files[0]);
+                        });
+                        
+                        $("#up_product_thumbnail").change(function(){
+                            var reader = new FileReader();
+                            reader.onload = function(){
+                                var output = document.getElementById('up_chosenPhoto');
                                 output.src = reader.result;
                             };
                             reader.readAsDataURL(event.target.files[0]);
@@ -342,7 +369,7 @@
                         //read
                         function getProduct()
                         {
-                            var url = '{{ url("client/dashboard/getProduct/:limit") }}';
+                            var url = publicURL;
                             url = url.replace(':limit', limit);
                             
                             $.ajax({
@@ -477,6 +504,150 @@
                                 dataType:"json",
                                 success: function(response){
                                     getProduct();
+                                }
+                            });
+                        });
+                        
+                        //Edit
+                        $(document).on('click', '#btnEdit', function(e) {
+                            
+                            var no = $(this).val();
+                            
+                            var url = '{{ url("client/dashboard/getOneProduct/:no") }}';
+                            url = url.replace(':no', no);
+                            
+                            $.ajax({
+                                type:"GET",
+                                url:url,
+                                dataType:"json",
+                                success: function(response)
+                                {
+                                    $('#productId').val(response.products.no);
+                                    $('#up_product_name').val(response.products.name);
+                                    $('#up_product_price').val(response.products.price);
+                                    $('#up_product_category').val(response.products.category);
+                                    $('#up_chosenPhoto').attr("src", response.products.thumbnail);
+                                    $('#up_product_description').val(response.products.description);
+                                    productNoForTags = response.products.no;
+                                    getTags();
+                                    
+                                }
+                            });
+                            
+                        });
+                        
+                        //read tags
+                        function getTags()
+                        {
+                            var url = '{{ url("client/dashboard/getTags/:product") }}';
+                            url = url.replace(':product', productNoForTags);
+                            
+                            $.ajax({
+                                type: "GET",
+                                url:url,
+                                dataType:"json",
+                                success:function(response){
+                                    
+                                    $('#tagList').html('');
+                                    
+                                    $.each(response.tags,function(key,item){
+                                        
+                                        
+                                        $('#tagList').append('<tr>\
+                                            <td>\
+                                                '+item.tag+'\
+                                            </td>\
+                                            <td>\
+                                                <div class="btn-group btn-group-sm">\
+                                                    <button id="btnDeleteTag" value="'+item.id+'" class="btn btn-danger">Delete</button>\
+                                                </div>\
+                                            </td>\
+                                        </tr>\
+                                        ');
+                                    });
+                                }
+                            });
+                        }
+                        
+                        //search
+                        $("#searchProduct").keyup(function(){
+                            
+                            var length = $('#searchProduct').val().length;
+                            
+                            if (length > 0) {
+                                publicURL = '{{ url("client/dashboard/searchProduct/:search") }}';
+                                publicURL = publicURL.replace(':search', $("#searchProduct").val());
+                                getProduct();
+                            }
+                            else
+                            {
+                                publicURL = '{{ url("client/dashboard/getProduct/:limit") }}';
+                                getProduct();
+                            }
+                        });
+                        
+                        //delete tag
+                        $(document).on('click', '#btnDeleteTag', function(e) {
+                            
+                            e.preventDefault();
+                            var no = $(this).val();
+                            
+                            var data = {
+                                'no' : no,
+                            }
+                            
+                            var url = '{{ url("client/dashboard/deleteTag") }}';
+                            
+                            $.ajax({
+                                type:"DELETE",
+                                url: url,
+                                data:data,
+                                dataType:"json",
+                                success: function(response){
+                                    getTags();
+                                }
+                            });
+                        });
+                        
+                        //Update Product
+                        $(document).on('click', '#btnUpdateProduct', function(e) {
+                            e.preventDefault();
+                            
+                            $('#btnUpdateProduct').text('Updating...');
+                            
+                            let formData = new FormData($('#editProductForm')[0]);
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ url('client/dashboard/updateProduct') }}",
+                                data: formData,
+                                contentType:false,
+                                processData:false,
+                                success: function(response){
+                                    if(response.status==400)
+                                    {
+                                        $.each(response.errors,function(key,err_value){
+                                            $('#errorList_update').append('<li>'+err_value+'</li>');
+                                        });
+                                        
+                                        $('#btnUpdateProduct').text('Save Changes');
+                                    }
+                                    else
+                                    {
+                                        $('#errorList_update').html('');
+                                        
+                                        $('#btnUpdateProduct').removeClass('btn-primary');
+                                        $('#btnUpdateProduct').addClass('btn-success');
+                                        $('#btnUpdateProduct').text('Updated!');
+                                        
+                                        setTimeout(function(){
+                                            $('#btnUpdateProduct').removeClass('btn-success');
+                                            $('#btnUpdateProduct').addClass('btn-primary');
+                                            $('#btnUpdateProduct').text('Save Changes');
+                                            $('#modalEditProduct').modal('hide');
+                                        }, 1000);
+                                        
+                                        getProduct();
+                                    }
                                 }
                             });
                         });

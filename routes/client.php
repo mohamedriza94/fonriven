@@ -25,12 +25,18 @@ Route::group([
             Route::get('connections', 'DashboardController@connections')->name('client.connections');
             Route::get('products', 'DashboardController@products')->name('client.products');
             Route::get('messages', 'DashboardController@messages')->name('client.messages');
+            Route::get('suppliers', 'DashboardController@suppliers')->name('client.suppliers');
 
             //product management
             Route::post('addProduct', 'ProductController@addProduct');
             Route::get('getProduct/{limit}', 'ProductController@getProduct');
+            Route::get('searchProduct/{search}', 'ProductController@searchProduct');
             Route::post('changeStatus', 'ProductController@changeStatus');
             Route::delete('deleteProduct', 'ProductController@deleteProduct');
+            Route::get('getOneProduct/{id}', 'ProductController@getOneProduct');
+            Route::get('getTags/{product}', 'ProductController@getTags');
+            Route::delete('deleteTag', 'ProductController@deleteTag');
+            Route::post('updateProduct', 'ProductController@updateProduct');
         });
     });
 });
