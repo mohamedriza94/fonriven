@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use App\Models\Product;
+use App\Models\Rating;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
 use App\Models\Connection;
@@ -191,10 +192,12 @@ class ProductController extends Controller
     {
         $products = Product::where('status','=','active')->where('supplier','=',$id)->count();
         $connects = Connection::where('status','=','active')->where('supplier','=',$id)->count();
+        $ratings = Rating::where('supplier_id','=',$id)->avg('rating');
         
         return response()->json([
             'products'=>$products, 
             'connects'=>$connects,
+            'ratings'=>$ratings,
         ]);
     }
 

@@ -17,10 +17,20 @@
                                     <ul class="nk-block-tools g-3">
                                         <li>
                                             <div class="form-control-wrap">
-                                                <div class="form-icon form-icon-right">
-                                                    <em class="icon ni ni-search"></em>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <div class="form-control-wrap">
+                                                            <select class="form-control" id="categorySearch">
+                                                                <option value="all">All</option>
+                                                                <option value="men">Men's Clothing</option>
+                                                                <option value="women">Women's Clothing</option>
+                                                                <option value="unisex">Unisex</option>
+                                                                <option value="kids">Kid's Clothing</option>
+                                                                <option value="accessories">Accessories</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <input type="text" class="form-control" id="searchSupplier" placeholder="Search">
                                             </div>
                                         </li>
                                     </ul>
@@ -154,6 +164,8 @@
                             type:"GET", url:urlProduct, dataType:"json",
                             success: function(response)
                             {
+                                var rating = response.ratings.slice(0,3);
+                                
                                 $('#supplierList').append('<div class="col-sm-6 col-lg-4 col-xxl-3">\
                                     <div class="card card-bordered">\
                                         <div class="card-inner">\
@@ -169,7 +181,7 @@
                                                 </div>\
                                                 <ul class="team-statistics">\
                                                     <li><span>'+response.connects+'</span><span> Connections </span></li>\
-                                                    <li><span>87.5%</span><span> Rating </span></li>\
+                                                    <li><span>'+rating+'</span><span> Rating </span></li>\
                                                     <li><span>'+response.products+'</span><span> Products </span></li>\
                                                 </ul>\
                                                 <div class="team-view">\
@@ -188,19 +200,17 @@
             });
         }
         
-        //search
-        $("#searchSupplier").keyup(function(){
-            
-            var length = $('#searchSupplier').val().length;
-            
-            if (length > 0) {
-                publicURL = '{{ url("client/dashboard/searchSupplier/:search") }}';
-                publicURL = publicURL.replace(':search', $("#searchSupplier").val());
+        //categorize
+        $('#categorySearch').on('change', function() {
+            if($("#categorySearch").val() == "all")
+            {
+                publicURL = '{{ url("client/dashboard/getSupplier") }}';
                 getSupplier();
             }
             else
             {
-                publicURL = '{{ url("client/dashboard/getSupplier") }}';
+                publicURL = '{{ url("client/dashboard/categorizeSupplier/:category") }}';
+                publicURL = publicURL.replace(':category', $("#categorySearch").val());
                 getSupplier();
             }
         });
@@ -292,7 +302,7 @@
             e.preventDefault();
             
             $('#btnConnect').text('Connecting...');
-
+            
             var supplier = $('#supplier_id').val();
             
             var data = {
@@ -325,7 +335,7 @@
                             $('#btnConnect').removeClass('btn-light');
                             $('#btnConnect').addClass('btn-success');
                             $('#btnConnect').text('Connect');
-
+                            
                             getSupplier();
                         }, 2000);
                     }

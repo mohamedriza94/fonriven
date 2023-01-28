@@ -118,11 +118,19 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-9">
                                             <div class="form-group">
                                                 <label class="form-label" for="product-title">Name</label>
                                                 <div class="form-control-wrap">
                                                     <input type="text" class="form-control" id="supplierName" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label class="form-label" for="product-title">Rating</label>
+                                                <div class="form-control-wrap">
+                                                    <input type="text" class="form-control" id="rating" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -156,6 +164,8 @@
                                             <button id="btnRateFour" class="btn btn-primary">4</button>
                                             <button id="btnRateFive" class="btn btn-success">5</button>
                                         </div>
+                                        
+                                        <label id="labelRating"></label>
                                     </div>
                                 </div>
                             </div>
@@ -192,6 +202,18 @@
                         
                         var status = '';
                         var button = '';
+                        var rateButton = '';
+                        
+                        //check user
+                        if(response.userType == "supplier")
+                        {
+                            rateButton = "-";
+                        }
+                        else
+                        {
+                            rateButton = '<button id="btnRate" data-bs-toggle="modal" data-bs-target="#modalRating" value="'+item.supplierNo+'" class="btn btn-success">Rate</button>';
+                        }
+                        
                         if(item.connectionStatus == 'active')
                         {
                             status = '<span class="badge bg-success">Active</span>';
@@ -199,7 +221,7 @@
                             button = '<div class="btn-group btn-group-sm">\
                                 <button id="btnEndConnection" value="'+item.connectionNo+'" class="btn btn-outline-danger">End Connection</button>\
                                 <button id="btnView" data-bs-toggle="modal" data-bs-target="#modalViewConnections" value="'+item.connectionNo+'" class="btn btn-primary">View</button>\
-                                <button id="btnRate" data-bs-toggle="modal" data-bs-target="#modalRating" value="'+item.supplierNo+'" class="btn btn-success">Rate</button>\
+                                '+rateButton+'\
                             </div>';
                         }
                         else if(item.connectionStatus == 'ended')
@@ -258,6 +280,10 @@
                     $('#supplierTelephone').val(response.connections.supplierTelephone);
                     $('#supplierEmail').val(response.connections.supplierEmail);
                     $('#supplierName').val(response.connections.supplierName);
+                    
+                    var rating = response.ratings.slice(0,3);
+                    
+                    $('#rating').val(rating+" / 5");
                 }
             });
             
@@ -304,6 +330,56 @@
                 }
             });
         });
+        
+        //rating system
+        var supplier_id = "";
+        var rating = "";
+        $(document).on('click', '#btnRate', function(e) {
+            supplier_id = $(this).val();
+        });
+        
+        $(document).on('click', '#btnRateOne', function(e) {
+            rating = "1";
+            rateSupplier();
+        });
+        $(document).on('click', '#btnRateTwo', function(e) {
+            rating = "2";
+            rateSupplier();
+        });
+        $(document).on('click', '#btnRateThree', function(e) {
+            rating = "3";
+            rateSupplier();
+        });
+        $(document).on('click', '#btnRateFour', function(e) {
+            rating = "4";
+            rateSupplier();
+        });
+        $(document).on('click', '#btnRateFive', function(e) {
+            rating = "5";
+            rateSupplier();
+        });
+        
+        function rateSupplier()
+        {
+            var data = {
+                'supplier_id' : supplier_id,
+                'rating' : rating
+            }
+            
+            $.ajax({
+                type:"POST",
+                url: '{{ url("client/dashboard/rating") }}',
+                data:data,
+                dataType:"json",
+                success: function(response){
+                    $('#labelRating').text('Thank you for your rating.');
+                    
+                    setTimeout(() => {
+                        $('#labelRating').text('');
+                    }, 2000);
+                }
+            });
+        }
     });
 </script>
 

@@ -16,16 +16,23 @@
                                 <div class="toggle-expand-content" data-content="pageMenu">
                                     <ul class="nk-block-tools g-3">
                                         <li>
-                                            <div class="form-control-wrap">
-                                                <div class="form-icon form-icon-right">
-                                                    <em class="icon ni ni-search"></em>
-                                                </div>
-                                                <input type="text" class="form-control" id="searchProduct" placeholder="Search">
+                                            @if (auth()->guard('client')->user()->role == "supplier")
+                                            <div class="btn-group" aria-label="Basic example">
+                                                <button value="toSuppier" id="btnInbox" class="btn btn-dark">Inbox</button>
+                                                <button value="supplierTo" id="btnSent" class="btn btn-dark">Sent</button>
                                             </div>
+                                            @endif
+                                            
+                                            @if (auth()->guard('client')->user()->role == "buyer")
+                                            <div class="btn-group" aria-label="Basic example">
+                                                <button value="toBuyer" id="btnInbox" class="btn btn-dark">Inbox</button>
+                                                <button value="buyerTo" id="btnSent" class="btn btn-dark">Sent</button>
+                                            </div>
+                                            @endif
                                         </li>
                                         <li class="nk-block-tools-opt">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalAddProduct" class="toggle btn btn-icon btn-primary d-md-none"><em class="icon ni ni-plus"></em></a>
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalAddProduct" class="toggle btn btn-primary d-none d-md-inline-flex"><em class="icon ni ni-plus"></em><span>Compose</span></a>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalCompose" class="toggle btn btn-icon btn-primary d-md-none"><em class="icon ni ni-plus"></em></a>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#modalCompose" class="toggle btn btn-primary d-none d-md-inline-flex"><em class="icon ni ni-plus"></em><span>Compose</span></a>
                                         </li>
                                     </ul>
                                 </div>
@@ -41,36 +48,27 @@
                                 <table class="table text-left">
                                     <thead class="table-dark">
                                         <tr>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Unit Price (LKR)</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Subject</th>
+                                            <th scope="col">Entity</th>
                                             <th scope="col">status</th>
-                                            <th scope="col">Category</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="productList">
+                                    <tbody id="messageList">
                                     </tbody>
                                 </table>
-                            </div>
-                            <div class="card-inner">
-                                <div class="nk-block-between-md g-3">
-                                    <div class="btn-group btn-group-sm" aria-label="Basic example">
-                                        <button type="button" id="btnPrev" class="btn btn-dim btn-danger">Prev</button>
-                                        <button type="button" id="btnNext" class="btn btn-dim btn-success">Next</button>
-                                    </div>
-                                </div><!-- .nk-block-between -->
                             </div>
                         </div>
                     </div>
                 </div><!-- .nk-block -->
                 
-                
                 {{-- modal to add product --}}
-                <div class="modal fade zoom xl" tabindex="-1" id="modalAddProduct">
+                <div class="modal fade zoom xl" tabindex="-1" id="modalCompose">
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">New Product</h5>
+                                <h5 class="modal-title">Compose Message</h5>
                                 <a href="#" class="close" data-bs-dismiss="modal" aria-label="Close">
                                     <em class="icon ni ni-cross"></em>
                                 </a>
@@ -78,78 +76,40 @@
                             <div class="modal-body">
                                 
                                 <div class="alert alert-icon alert-danger" role="alert">
-                                    <ul id="errorList"></ul>
+                                    <ul id="errorList_Message"></ul>
                                 </div>
                                 
                                 <div class="preview-block">
                                     
-                                    <form class="row g-3" method="post" enctype="multipart/form-data" id="addProductForm">
-                                        <div class="col-12">
+                                    <form class="row g-3">
+                                        <div class="col-sm-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="product-title">Product Name</label>
+                                                <label class="form-label">Choose Recipient</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" id="pName" name="name">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label" for="regular-price">Wholesale Price (LKR)</label>
-                                                <div class="form-control-wrap">
-                                                    <input type="number" class="form-control" id="pPrice" name="price">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label class="form-label" for="category">Category</label>
-                                                <div class="form-control-wrap">
-                                                    <select class="form-control" id="pCategory" name="category">
-                                                        <option value="men">Men's Clothing</option>
-                                                        <option value="women">Women's Clothing</option>
-                                                        <option value="unisex">Unisex</option>
-                                                        <option value="kids">Kid's Clothing</option>
-                                                        <option value="accessories">Accessories</option>
+                                                    <select id="chooseRecipient" class="form-select js-select2">
+                                                        
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="tags">Tags (Keep a space between each tag)</label>
+                                                <label class="form-label">Subject</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" id="pTags" name="tag">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="form-group">
-                                                <div class="form-control-wrap">
-                                                    <img class="form-control" id="pChosenPhoto" src="" style="height:100px; object-fit: contain;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <div class="form-group">
-                                                <label class="form-label" for="default-06">Choose a thumbnail</label></label>
-                                                <div class="form-control-wrap">
-                                                    <div class="form-file">
-                                                        <input type="file" class="form-file-input" id="pThumbnail" name="thumbnail">
-                                                        <label class="form-file-label" for="customFile">Choose</label>
-                                                    </div>
+                                                    <input type="text" class="form-control" id="subject">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="regular-price">Description</label>
+                                                <label class="form-label" for="regular-price">Message</label>
                                                 <div class="form-control-wrap">
-                                                    <textarea rows="5" type="number" class="form-control" id="pDescription" name="description"></textarea>
+                                                    <textarea rows="5" type="number" class="form-control" id="message"></textarea>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <button class="btn btn-primary" id="btnAddProduct" type="submit"><em class="icon ni ni-plus"></em><span>Add Product</span></button>
+                                            <button class="btn btn-primary" id="btnSend"><span>Send</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -161,341 +121,258 @@
                     </div>
                 </div>
                 
-                {{-- modal to edit product --}}
-                <div class="modal fade zoom xl" tabindex="-1" id="modalEditProduct">
+                {{-- modal to add product --}}
+                <div class="modal fade zoom xl" tabindex="-1" id="modalView">
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Edit Product</h5>
+                                <h5 class="modal-title">View Message</h5>
                                 <a href="#" class="close" data-bs-dismiss="modal" aria-label="Close">
                                     <em class="icon ni ni-cross"></em>
                                 </a>
                             </div>
                             <div class="modal-body">
                                 
-                                <div class="alert alert-icon alert-danger" role="alert">
-                                    <ul id="errorList_update"></ul>
-                                </div>
-                                
                                 <div class="preview-block">
                                     
-                                    <form class="row g-3" method="post" enctype="multipart/form-data" id="editProductForm"> 
-                                        <input type="hidden" id="productId" name="no">
-                                        <div class="col-12">
+                                    <form class="row g-3">
+                                        <div class="col-sm-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="product-title">Product Name</label>
-                                                <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" name="name" id="up_product_name">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label class="form-label" for="regular-price">Wholesale Price (LKR)</label>
-                                                <div class="form-control-wrap">
-                                                    <input type="number" class="form-control" name="price" id="up_product_price">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label class="form-label" for="category">Category</label>
-                                                <div class="form-control-wrap">
-                                                    <select class="form-control" name="category" id="up_product_category">
-                                                        <option value="men">Men's Clothing</option>
-                                                        <option value="women">Women's Clothing</option>
-                                                        <option value="unisex">Unisex</option>
-                                                        <option value="kids">Kid's Clothing</option>
-                                                        <option value="accessories">Accessories</option>
-                                                    </select>
-                                                </div>
+                                                <label class="form-label" id="viewEntity">Sent To: </label><br>
+                                                <label class="form-label" id="viewDate">Date:</label>
                                             </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="tags">Add More Tags (Keep a space between each tag)</label>
-                                                <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" name="tag" id="up_product_tag">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <div class="form-group">
-                                                <div class="form-control-wrap">
-                                                    <img class="form-control" id="up_chosenPhoto" src="" style="height:100px; object-fit: contain;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <div class="form-group">
-                                                <label class="form-label" for="default-06">Change thumbnail</label></label>
-                                                <div class="form-control-wrap">
-                                                    <div class="form-file">
-                                                        <input type="file" class="form-file-input" name="thumbnail" id="up_product_thumbnail">
-                                                        <label class="form-file-label" for="customFile">Choose</label>
-                                                    </div>
-                                                </div>
+                                                <label class="form-label" id="viewSubject"><u><b></b></u></label>
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="regular-price">Description</label>
+                                                <label class="form-label" for="regular-price">Message</label>
                                                 <div class="form-control-wrap">
-                                                    <textarea rows="5" type="number" class="form-control" id="up_product_description" name="description"></textarea>
+                                                    <textarea rows="5" readonly class="form-control" id="viewMessage"></textarea>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-12">
-                                            <button class="btn btn-primary" type="submit" id="btnUpdateProduct"></em><span>Save Changes</span></button>
-                                        </div>
                                     </form>
                                     
-                                    {{-- tags --}}
                                     <hr>
-                                    <h4>Tags</h4>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Tag</th>
-                                                <th scope="col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tagList">
-                                            
-                                        </tbody>
-                                    </table>
+                                    
+                                    <form class="row g-3 d-none" id="replyForm">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Reply</label><br>
+                                                <div class="form-control-wrap">
+                                                    <textarea rows="5" class="form-control" id="reply"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <button class="btn btn-primary" id="btnSendReply"><span>Mail Reply</span></button>
+                                        </div>
+                                        
+                                    </form>
                                 </div>
-                            </div>
-                            <div class="modal-footer bg-light">
-                                <span class="sub-text">Edit a Product from your portfolio</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 
+                
                 <script>
                     $(document).ready(function(){
                         
-                        var publicURL = '{{ url("client/dashboard/getProduct/:limit") }}';
-                        getProduct();
-                        
-                        //Add Product
-                        $(document).on('click', '#btnAddProduct', function(e) {
-                            e.preventDefault();
-                            
-                            $('#btnAddProduct').text('Adding...');
-                            
-                            let formData = new FormData($('#addProductForm')[0]);
+                        getRecipients();
+                        function getRecipients()
+                        {
                             $.ajax({
-                                type: "POST",
-                                url: "{{ url('client/dashboard/addProduct') }}",
-                                data: formData,
-                                contentType:false,
-                                processData:false,
+                                type: "GET",
+                                url: '{{ url("client/dashboard/viewConnections") }}',
+                                dataType:"json",
+                                success:function(response){
+                                    
+                                    $('#chooseRecipient').html('');
+                                    
+                                    $.each(response.connections,function(key,item){
+                                        
+                                        $('#chooseRecipient').append('<option value="'+item.supplierNo+'">'+item.supplierEmail+' &nbsp; '+item.supplierName+'</option>\
+                                        ');
+                                    });
+                                }
+                            });
+                        }
+                        
+                        //send message
+                        $(document).on('click', '#btnSend', function(e) {
+                            e.preventDefault();
+                            var chooseRecipient = $('#chooseRecipient').val();
+                            var subject = $('#subject').val();
+                            var message = $('#message').val();
+                            
+                            var data = {
+                                'recipient' : chooseRecipient,
+                                'subject' : subject,
+                                'message' : message
+                            }
+                            
+                            var url = '{{ url("client/dashboard/composeMessage") }}';
+                            
+                            $.ajax({
+                                type:"POST",
+                                url: url,
+                                data:data,
+                                dataType:"json",
                                 success: function(response){
                                     if(response.status==400)
                                     {
+                                        $('#errorList_Message').html('');
+                                        
                                         $.each(response.errors,function(key,err_value){
-                                            $('#errorList').append('<li>'+err_value+'</li>');
+                                            $('#errorList_Message').append('<li>'+err_value+'</li>');
                                         });
                                         
-                                        $('#btnAddProduct').text('Add Product');
+                                        $('#btnSend').text('Send');
                                     }
                                     else
                                     {
-                                        $('#errorList').html('');
+                                        $('#errorList_Message').html('');
                                         
-                                        $('#btnAddProduct').removeClass('btn-primary');
-                                        $('#btnAddProduct').addClass('btn-success');
-                                        $('#btnAddProduct').text('Added!');
+                                        $('#btnSend').removeClass('btn-primary');
+                                        $('#btnSend').addClass('btn-success');
+                                        $('#btnSend').text('Sent!');
                                         
                                         setTimeout(function(){
-                                            $('#btnAddProduct').removeClass('btn-success');
-                                            $('#btnAddProduct').addClass('btn-primary');
-                                            $('#btnAddProduct').text('Add Product');
+                                            $('#btnSend').removeClass('btn-success');
+                                            $('#btnSend').addClass('btn-primary');
+                                            $('#btnSend').text('Send');
+                                            $('#modalCompose').modal('hide');
                                         }, 1000);
                                         
-                                        getProduct();
+                                        getRecipients();
                                         
-                                        $('#pName').val('');
-                                        $('#pPrice').val('');
-                                        $('#pTags').val('');
-                                        $('#pDescription').val('');
+                                        $('subject').val('');
+                                        $('message').val('');
                                     }
                                 }
                             });
                         });
                         
-                        $("#pThumbnail").change(function(){
-                            var reader = new FileReader();
-                            reader.onload = function(){
-                                var output = document.getElementById('pChosenPhoto');
-                                output.src = reader.result;
-                            };
-                            reader.readAsDataURL(event.target.files[0]);
+                        var entity = "From";
+                        var publicURL = '';
+                        //view inbox
+                        $(document).on('click','#btnInbox', function(e){
+                            entity = "From";
+                            
+                            publicURL = '{{ url("client/dashboard/getMessages/:type") }}';
+                            publicURL = publicURL.replace(':type', $(this).val());
+                            getMessages();
                         });
                         
-                        $("#up_product_thumbnail").change(function(){
-                            var reader = new FileReader();
-                            reader.onload = function(){
-                                var output = document.getElementById('up_chosenPhoto');
-                                output.src = reader.result;
-                            };
-                            reader.readAsDataURL(event.target.files[0]);
+                        //view sent
+                        $(document).on('click','#btnSent', function(e){
+                            entity = "To";
+                            
+                            publicURL = '{{ url("client/dashboard/getMessages/:type") }}';
+                            publicURL = publicURL.replace(':type', $(this).val());
+                            getMessages();
                         });
                         
-                        //limit and offset for pagination
-                        var limit = 0;
-                        $(document).on('click', '#btnNext', function(e) {
-                            
-                            limit = limit + 5;
-                            getProduct();
-                            
-                        });
-                        
-                        $(document).on('click', '#btnPrev', function(e) {
-                            
-                            limit = limit - 5;
-                            
-                            if(limit < 0)
-                            {
-                                limit = 0;
-                            }
-                            
-                            getProduct();
-                            
-                        });
-                        
-                        //read
-                        function getProduct()
+                        function getMessages()
                         {
-                            var url = publicURL;
-                            url = url.replace(':limit', limit);
-                            
                             $.ajax({
                                 type: "GET",
-                                url:url,
+                                url: publicURL,
                                 dataType:"json",
                                 success:function(response){
                                     
-                                    $('#productList').html('');
+                                    $('#messageList').html('');
                                     
-                                    $.each(response.products,function(key,item){
+                                    $.each(response.messages,function(key,item){
                                         
-                                        var name = item.name;
-                                        var name = name.slice(0,15)+'...';
+                                        var date = item.date.slice(0,10);
+                                        var subject = item.subject.slice(0,20);
                                         
                                         var status = '';
-                                        var button = '';
-                                        if(item.status == 'active')
+                                        if(item.status == 'unread')
                                         {
-                                            status = '<span class="badge bg-success">Active</span>';
-                                            
-                                            button = '<div class="btn-group btn-group-sm">\
-                                                <button id="btnDeactivate" value="'+item.no+'" class="btn btn-outline-danger">Deactivate</button>\
-                                                <button id="btnEdit" value="'+item.no+'" class="btn btn-dark" data-bs-target="#modalEditProduct" data-bs-toggle="modal">Edit</button>\
-                                                <button id="btnDelete" value="'+item.no+'" class="btn btn-danger">Delete</button>\
-                                            </div>';
+                                            status = '<span class="badge bg-danger">Unread</span>';
                                         }
                                         else
                                         {
-                                            status = '<span class="badge bg-danger">Inactive</span>';
-                                            
-                                            button = '<div class="btn-group btn-group-sm">\
-                                                <button id="btnActivate" value="'+item.no+'" class="btn btn-outline-success">Activate</button>\
-                                                <button id="btnEdit" value="'+item.no+'" class="btn btn-dark" data-bs-target="#modalEditProduct" data-bs-toggle="modal">Edit</button>\
-                                                <button id="btnDelete" value="'+item.no+'" class="btn btn-danger">Delete</button>\
-                                            </div>';
+                                            status = '<span class="badge bg-success">Read</span>';
                                         }
                                         
+                                        var replybutton = "";
+                                        if(item.status == 'unread' && entity=="From")
+                                        {
+                                            replybutton = '<button value="'+item.id+'" data-bs-toggle="modal" data-bs-target="#modalView" id="btnReply" class="btn btn-dark">Reply</button>';
+                                        }
                                         
-                                        
-                                        $('#productList').append('<tr>\
-                                            <td>\
-                                                <img src="'+item.thumbnail+'" style="height:40px; object-fit: contain;">&nbsp;\
-                                                '+name+'\
-                                            </td>\
-                                            <td>\
-                                                '+item.price+'\
-                                            </td>\
-                                            <td>\
-                                                '+status+'\
-                                            </td>\
-                                            <td>\
-                                                '+item.category+'\
-                                            </td>\
-                                            <td>\
-                                                '+button+'\
-                                            </td>\
-                                        </tr>\
-                                        ');
+                                        var entityName = "";
+                                        //get entity details
+                                        if(entity=="From")
+                                        {
+                                            var url = '{{ url("client/dashboard/getEntity/:no") }}';
+                                            url = url.replace(':no', item.sender);
+                                            
+                                            $.ajax({
+                                                type:"GET", url:url, dataType:"json",
+                                                success: function(response)
+                                                {
+                                                    entityName = response.entity.name;
+                                                    
+                                                    $('#messageList').append('<tr>\
+                                                        <td>'+date+'</td>\
+                                                        <td>'+subject+'</td>\
+                                                        <td>'+entity+' <b>'+entityName+'</b></td>\
+                                                        <td>'+status+'</td>\
+                                                        <td><button value="'+item.id+'" data-bs-toggle="modal" data-bs-target="#modalView" id="btnView" class="btn btn-success">Open</button>\
+                                                            '+replybutton+'\
+                                                        </td>\
+                                                    </tr>');
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            var url = '{{ url("client/dashboard/getEntity/:no") }}';
+                                            url = url.replace(':no', item.recipient);
+                                            
+                                            $.ajax({
+                                                type:"GET", url:url, dataType:"json",
+                                                success: function(response)
+                                                {
+                                                    entityName = response.entity.name;
+                                                    
+                                                    $('#messageList').append('<tr>\
+                                                        <td>'+date+'</td>\
+                                                        <td>'+subject+'</td>\
+                                                        <td>'+entity+' <b>'+entityName+'</b></td>\
+                                                        <td>'+status+'</td>\
+                                                        <td><button value="'+item.id+'" data-bs-toggle="modal" data-bs-target="#modalView" id="btnView" class="btn btn-success">Open</button>\
+                                                        </td>\
+                                                    </tr>');
+                                                }
+                                            });
+                                        }
                                     });
                                 }
                             });
                         }
                         
-                        //activate
-                        $(document).on('click', '#btnActivate', function(e) {
-                            
-                            e.preventDefault();
-                            var no = $(this).val();
-                            var status = 'active';
-                            
-                            var data = {
-                                'no' : no,
-                                'status' : status
-                            }
-                            
-                            var url = '{{ url("client/dashboard/changeStatus") }}';
-                            
-                            $.ajax({
-                                type:"POST",
-                                url: url,
-                                data:data,
-                                dataType:"json",
-                                success: function(response){
-                                    getProduct();
-                                }
-                            });
-                        });
-                        
-                        //deactivate
-                        $(document).on('click', '#btnDeactivate', function(e) {
-                            
-                            e.preventDefault();
-                            var no = $(this).val();
-                            var status = 'inactive';
-                            
-                            var data = {
-                                'no' : no,
-                                'status' : status
-                            }
-                            
-                            var url = '{{ url("client/dashboard/changeStatus") }}';
-                            
-                            $.ajax({
-                                type:"POST",
-                                url: url,
-                                data:data,
-                                dataType:"json",
-                                success: function(response){
-                                    getProduct();
-                                }
-                            });
-                        });
-                        
-                        //delete
+                        //delete 
                         $(document).on('click', '#btnDelete', function(e) {
                             
                             e.preventDefault();
-                            var no = $(this).val();
+                            var id = $(this).val();
                             
                             var data = {
-                                'no' : no,
-                                'status' : status
+                                'id' : id,
                             }
                             
-                            var url = '{{ url("client/dashboard/deleteProduct") }}';
+                            var url = '{{ url("client/dashboard/deleteMessage") }}';
                             
                             $.ajax({
                                 type:"DELETE",
@@ -503,150 +380,121 @@
                                 data:data,
                                 dataType:"json",
                                 success: function(response){
-                                    getProduct();
+                                    getMessages();
                                 }
                             });
                         });
                         
-                        //Edit
-                        $(document).on('click', '#btnEdit', function(e) {
+                        //view 
+                        $(document).on('click', '#btnView', function(e) {
                             
-                            var no = $(this).val();
+                            $('#replyForm').addClass('d-none');
                             
-                            var url = '{{ url("client/dashboard/getOneProduct/:no") }}';
-                            url = url.replace(':no', no);
+                            e.preventDefault();
+                            var url = '{{ url("client/dashboard/getOneMessage/:id") }}';
+                            url = url.replace(':id', $(this).val());
                             
                             $.ajax({
-                                type:"GET",
-                                url:url,
-                                dataType:"json",
+                                type:"GET", url:url, dataType:"json",
                                 success: function(response)
                                 {
-                                    $('#productId').val(response.products.no);
-                                    $('#up_product_name').val(response.products.name);
-                                    $('#up_product_price').val(response.products.price);
-                                    $('#up_product_category').val(response.products.category);
-                                    $('#up_chosenPhoto').attr("src", response.products.thumbnail);
-                                    $('#up_product_description').val(response.products.description);
-                                    productNoForTags = response.products.no;
-                                    getTags();
                                     
-                                }
-                            });
-                            
-                        });
-                        
-                        //read tags
-                        function getTags()
-                        {
-                            var url = '{{ url("client/dashboard/getTags/:product") }}';
-                            url = url.replace(':product', productNoForTags);
-                            
-                            $.ajax({
-                                type: "GET",
-                                url:url,
-                                dataType:"json",
-                                success:function(response){
+                                    $('#viewDate').text("Date: "+response.messages.date);
+                                    $('#viewSubject').text("Subject: "+response.messages.subject);
+                                    $('#viewMessage').val(response.messages.message);
                                     
-                                    $('#tagList').html('');
+                                    messageID = response.messages.id;
+                                    messageSubject = response.messages.subject;
+                                    messageDate = response.messages.date;
                                     
-                                    $.each(response.tags,function(key,item){
-                                        
-                                        
-                                        $('#tagList').append('<tr>\
-                                            <td>\
-                                                '+item.tag+'\
-                                            </td>\
-                                            <td>\
-                                                <div class="btn-group btn-group-sm">\
-                                                    <button id="btnDeleteTag" value="'+item.id+'" class="btn btn-danger">Delete</button>\
-                                                </div>\
-                                            </td>\
-                                        </tr>\
-                                        ');
-                                    });
-                                }
-                            });
-                        }
-                        
-                        //search
-                        $("#searchProduct").keyup(function(){
-                            
-                            var length = $('#searchProduct').val().length;
-                            
-                            if (length > 0) {
-                                publicURL = '{{ url("client/dashboard/searchProduct/:search") }}';
-                                publicURL = publicURL.replace(':search', $("#searchProduct").val());
-                                getProduct();
-                            }
-                            else
-                            {
-                                publicURL = '{{ url("client/dashboard/getProduct/:limit") }}';
-                                getProduct();
-                            }
-                        });
-                        
-                        //delete tag
-                        $(document).on('click', '#btnDeleteTag', function(e) {
-                            
-                            e.preventDefault();
-                            var no = $(this).val();
-                            
-                            var data = {
-                                'no' : no,
-                            }
-                            
-                            var url = '{{ url("client/dashboard/deleteTag") }}';
-                            
-                            $.ajax({
-                                type:"DELETE",
-                                url: url,
-                                data:data,
-                                dataType:"json",
-                                success: function(response){
-                                    getTags();
-                                }
-                            });
-                        });
-                        
-                        //Update Product
-                        $(document).on('click', '#btnUpdateProduct', function(e) {
-                            e.preventDefault();
-                            
-                            $('#btnUpdateProduct').text('Updating...');
-                            
-                            let formData = new FormData($('#editProductForm')[0]);
-                            $.ajax({
-                                type: "POST",
-                                url: "{{ url('client/dashboard/updateProduct') }}",
-                                data: formData,
-                                contentType:false,
-                                processData:false,
-                                success: function(response){
-                                    if(response.status==400)
+                                    if(entity=="From")
                                     {
-                                        $.each(response.errors,function(key,err_value){
-                                            $('#errorList_update').append('<li>'+err_value+'</li>');
-                                        });
+                                        var url = '{{ url("client/dashboard/getEntity/:no") }}';
+                                        url = url.replace(':no', response.messages.sender);
                                         
-                                        $('#btnUpdateProduct').text('Save Changes');
+                                        $.ajax({
+                                            type:"GET", url:url, dataType:"json",
+                                            success: function(response)
+                                            {
+                                                $('#viewEntity').html(entity+" "+response.entity.name+" &nbsp; &nbsp; Sender\'s Email: "+response.entity.email);
+                                                messageEmail = response.entity.email;
+                                            }
+                                        });
                                     }
                                     else
                                     {
-                                        $('#errorList_update').html('');
+                                        var url = '{{ url("client/dashboard/getEntity/:no") }}';
+                                        url = url.replace(':no', response.messages.recipient);
                                         
-                                        $('#btnUpdateProduct').removeClass('btn-primary');
-                                        $('#btnUpdateProduct').addClass('btn-success');
-                                        $('#btnUpdateProduct').text('Updated!');
+                                        $.ajax({
+                                            type:"GET", url:url, dataType:"json",
+                                            success: function(response)
+                                            {
+                                                $('#viewEntity').html(entity+" "+response.entity.name+" &nbsp; &nbsp; Recipient\'s Email: "+response.entity.email);
+                                                messageEmail = response.entity.email;
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        });
+                        
+                        $(document).on('click', '#btnReply', function(e) {
+                            $("#btnView").click()
+                            $('#replyForm').removeClass('d-none');
+                        });
+                        
+                        //reply section
+                        var messageID = "";
+                        var messageSubject = "";
+                        var messageDate = "";
+                        var messageEmail = "";
+                        
+                        
+                        //send message
+                        $(document).on('click', '#btnSendReply', function(e) {
+                            e.preventDefault();
+                            $('#btnSendReply').text('Replying...');
+                            var reply = $('#reply').val();
+                            
+                            var data = {
+                                'messageID' : messageID,
+                                'messageSubject' : messageSubject,
+                                'messageDate' : messageDate,
+                                'messageEmail' : messageEmail,
+                                'reply' : reply
+                            }
+                            
+                            var url = '{{ url("client/dashboard/reply") }}';
+                            
+                            $.ajax({
+                                type:"POST",
+                                url: url,
+                                data:data,
+                                dataType:"json",
+                                success: function(response){
+                                    if(response.status==400)
+                                    {
+                                        alert('Type a reply');
+                                        $('#btnSendReply').text('Send Reply');
+                                        $('#btnSendReply').text('Mail Reply');
+                                    }
+                                    else
+                                    {
+                                        $('#btnSendReply').removeClass('btn-primary');
+                                        $('#btnSendReply').addClass('btn-success');
+                                        $('#btnSendReply').text('Replied!');
                                         
                                         setTimeout(function(){
-                                            $('#btnUpdateProduct').removeClass('btn-success');
-                                            $('#btnUpdateProduct').addClass('btn-primary');
-                                            $('#btnUpdateProduct').text('Save Changes');
-                                            $('#modalEditProduct').modal('hide');
+                                            $('#btnSendReply').removeClass('btn-success');
+                                            $('#btnSendReply').addClass('btn-primary');
+                                            $('#btnSendReply').text('Mail Reply');
+                                            $('#modalView').modal('hide');
                                         }, 1000);
                                         
-                                        getProduct();
+                                        getMessages();
+                                        
+                                        $('#reply').val('');
                                     }
                                 }
                             });

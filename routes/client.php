@@ -39,10 +39,11 @@ Route::group([
             Route::post('updateProduct', 'ProductController@updateProduct');
             Route::get('getProductCount/{id}', 'ProductController@getProductCount');
             Route::get('getProductsForView/{id}', 'ProductController@getProductsForView');
-
+            
             //supplier management
+            Route::get('getTrendingSuppliers', 'SupplierController@getTrendingSuppliers');
             Route::get('getSupplier', 'SupplierController@getSupplier');
-            Route::get('searchSupplier/{search}', 'SupplierController@searchSupplier');
+            Route::get('categorizeSupplier/{category}', 'SupplierController@categorizeSupplier');
             Route::get('getOneSupplier/{id}', 'SupplierController@getOneSupplier');
 
             //connections
@@ -51,6 +52,15 @@ Route::group([
             Route::get('searchConnections/{search}', 'ConnectionController@searchConnections');
             Route::get('viewOneConnection/{connectionNo}', 'ConnectionController@viewOneConnection');
             Route::post('endConnection', 'ConnectionController@endConnection');
+            Route::post('rating', 'ConnectionController@rating');
+
+            //messages
+            Route::post('composeMessage', 'MessageController@composeMessage');
+            Route::get('getMessages/{type}', 'MessageController@getMessages');
+            Route::get('getEntity/{no}', 'MessageController@getEntity');
+            Route::delete('deleteMessage', 'MessageController@deleteMessage');
+            Route::get('getOneMessage/{id}', 'MessageController@getOneMessage');
+            Route::post('reply', 'MessageController@reply');
             
         });
     });
