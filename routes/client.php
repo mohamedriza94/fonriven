@@ -1,6 +1,11 @@
 <?php
 use Illuminate\Support\Facades\Route;
 
+Route::get('getTrendingSuppliers', 'App\Http\Controllers\Client\SupplierController@getTrendingSuppliers');
+Route::get('getProductCount/{id}', 'App\Http\Controllers\Client\ProductController@getProductCount');
+Route::get('getProductsForView/{id}', 'App\Http\Controllers\Client\ProductController@getProductsForView');
+Route::post('makeConnection', 'App\Http\Controllers\Client\ConnectionController@makeConnection');
+Route::get('getOneSupplier/{id}', 'App\Http\Controllers\Client\SupplierController@getOneSupplier');
 
 Route::get('/', 'App\Http\Controllers\Client\DashboardController@index');
 Route::post('inquire', 'App\Http\Controllers\Client\MessageController@inquire');
@@ -42,7 +47,6 @@ Route::group([
             Route::get('getProductsForView/{id}', 'ProductController@getProductsForView');
             
             //supplier management
-            Route::get('getTrendingSuppliers', 'SupplierController@getTrendingSuppliers');
             Route::get('getSupplier', 'SupplierController@getSupplier');
             Route::get('categorizeSupplier/{category}', 'SupplierController@categorizeSupplier');
             Route::get('getOneSupplier/{id}', 'SupplierController@getOneSupplier');

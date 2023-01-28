@@ -46,7 +46,7 @@
         <div class="container mx-auto align-self-center">
 
         <div class="d-flex mt-5 align-items-center justify-content-center">
-        <img src="{{asset('assets/admin/src/assets/img/authLogo.')}}" class="w-25">
+        <h2 class="text-success"><b>FONRIVEN</b></h2>
         </div><hr>
             
     

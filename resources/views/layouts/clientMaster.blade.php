@@ -152,7 +152,7 @@
                             <div class="modal-body">
                                 
                                 <div class="alert alert-icon alert-danger" role="alert">
-                                    <ul id="errorList"></ul>
+                                    <ul id="header_errorList"></ul>
                                 </div>
                                 
                                 <div class="preview-block">
@@ -162,7 +162,7 @@
                                             <div class="form-group">
                                                 <label class="form-label" for="default-01">Name</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" id="name" name="name">
+                                                    <input type="text" class="form-control" id="header_name" name="name">
                                                 </div>
                                             </div>
                                         </div>
@@ -170,7 +170,7 @@
                                             <div class="form-group">
                                                 <label class="form-label" for="default-05">Telephone</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="number" class="form-control" id="telephone" name="telephone">
+                                                    <input type="number" class="form-control" id="header_telephone" name="telephone">
                                                 </div>
                                             </div>
                                         </div>
@@ -178,7 +178,7 @@
                                             <div class="form-group">
                                                 <label class="form-label" for="default-05">I am a</label>
                                                 <div class="form-control-wrap">
-                                                    <select class="form-control" id="role" name="role" required>
+                                                    <select class="form-control" id="role" name="header_role" required>
                                                         <option value="supplier">Supplier</option>
                                                         <option value="buyer">Buyer</option>
                                                     </select>
@@ -189,7 +189,7 @@
                                             <div class="form-group">
                                                 <label class="form-label" for="default-05">Email</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="email" class="form-control" id="email" name="email">
+                                                    <input type="email" class="form-control" id="header_email" name="email">
                                                 </div>
                                             </div>
                                         </div>
@@ -198,7 +198,7 @@
                                                 <label class="form-label" for="default-06">Profile Photo</label></label>
                                                 <div class="form-control-wrap">
                                                     <div class="form-file">
-                                                        <input type="file" multiple class="form-file-input" id="photo" name="photo">
+                                                        <input type="file" multiple class="form-file-input" id="header_photo" name="photo">
                                                         <label class="form-file-label" for="customFile">Choose file</label>
                                                     </div>
                                                 </div>
@@ -517,10 +517,10 @@
                                             $('#btnSignup').text('Signup');
                                         }, 2000);
                                         
-                                        $('#name').val('');
-                                        $('#telephone').val('');
+                                        $('#header_name').val('');
+                                        $('#header_telephone').val('');
                                         $('#role').val('');
-                                        $('#email').val('');
+                                        $('#header_email').val('');
                                     }
                                 }
                             });

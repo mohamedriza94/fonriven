@@ -19,24 +19,24 @@
                                         </ol>
                                         <div class="carousel-inner text-white">
                                             <div class="carousel-item active">
-                                                <img src="./images/slides/slide-a.jpg" class="d-block w-100" alt="...">
+                                                <img src="{{ asset('assets/client/images/slide-a.jpg') }}" class="d-block w-100" alt="...">
                                                 <div class="carousel-caption d-none d-md-block">
-                                                    <h5>First slide label</h5>
-                                                    <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                                                    <h5>FONRIVEN</h5>
+                                                    <p>Connecting buyers and suppliers for a better business future.</p>
                                                 </div>
                                             </div>
                                             <div class="carousel-item">
-                                                <img src="./images/slides/slide-b.jpg" class="d-block w-100" alt="...">
+                                                <img src="{{ asset('assets/client/images/slide-b.jpeg') }}" class="d-block w-100" alt="...">
                                                 <div class="carousel-caption d-none d-md-block">
-                                                    <h5>Second slide label</h5>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                                    <h5>FONRIVEN</h5>
+                                                    <p>Efficiently connect with the right suppliers and buyers.</p>
                                                 </div>
                                             </div>
                                             <div class="carousel-item">
-                                                <img src="./images/slides/slide-c.jpg" class="d-block w-100" alt="...">
+                                                <img src="{{ asset('assets/client/images/slide-c.jpeg') }}" class="d-block w-100" alt="...">
                                                 <div class="carousel-caption d-none d-md-block">
-                                                    <h5>Third slide label</h5>
-                                                    <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                                                    <h5>FONRIVEN</h5>
+                                                    <p>Building bridges for successful business partnerships.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -159,7 +159,7 @@
 <script>
     $(document).ready(function(){
         
-        var publicURL = '{{ url("client/dashboard/getTrendingSuppliers") }}';
+        var publicURL = '{{ url("getTrendingSuppliers") }}';
         getSupplier();
         
         //read
@@ -180,7 +180,7 @@
                         var joined = item.joined.slice(0,10);
                         
                         //get product count
-                        var urlProduct = '{{ url("client/dashboard/getProductCount/:id") }}';
+                        var urlProduct = '{{ url("getProductCount/:id") }}';
                         urlProduct = urlProduct.replace(':id', item.id);
                         
                         $.ajax({
@@ -228,7 +228,7 @@
             
             var no = $(this).val();
             
-            var url = '{{ url("client/dashboard/getOneSupplier/:id") }}';
+            var url = '{{ url("getOneSupplier/:id") }}';
             url = url.replace(':id', no);
             
             $.ajax({
@@ -244,7 +244,7 @@
                     $('#joined').val(response.clients.joined);
                     $('#supplier_id').val(response.clients.id);
                     
-                    var url = '{{ url("client/dashboard/getProductsForView/:id") }}';
+                    var url = '{{ url("getProductsForView/:id") }}';
                     url = url.replace(':id', response.clients.id);
                     
                     $.ajax({
@@ -291,7 +291,6 @@
                                             </ul>\
                                             <h6><a class="text-dark">'+item.name+'</a></h6>\
                                             <p class="">Wholesale Price: <b>Rs.'+item.price+'</b></p>\
-                                            <button type="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="top" title="'+item.description+'">Description</button>\
                                         </div>\
                                     </div>\
                                 </div>\
@@ -319,7 +318,7 @@
             
             $.ajax({
                 type:"POST",
-                url: '{{ url("client/dashboard/makeConnection") }}',
+                url: '{{ url("makeConnection") }}',
                 data:data,
                 dataType:"json",
                 success: function(response){

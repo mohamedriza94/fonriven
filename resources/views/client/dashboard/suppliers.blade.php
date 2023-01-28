@@ -283,7 +283,6 @@
                                             </ul>\
                                             <h6><a class="text-dark">'+item.name+'</a></h6>\
                                             <p class="">Wholesale Price: <b>Rs.'+item.price+'</b></p>\
-                                            <button type="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="top" title="'+item.description+'">Description</button>\
                                         </div>\
                                     </div>\
                                 </div>\

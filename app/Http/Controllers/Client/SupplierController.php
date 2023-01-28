@@ -17,6 +17,7 @@ class SupplierController extends Controller
         ->where('role','=','supplier')
         ->orderBy('id', 'DESC')
         ->get();
+
         return response()->json([
             'clients'=>$clients,
         ]);
@@ -24,11 +25,10 @@ class SupplierController extends Controller
 
     public function getTrendingSuppliers()
     {
-        $clients = Client::join('ratings','ratings.supplier_id','=','clients.id')
-        ->where('clients.status','=','active')
-        ->where('clients.role','=','supplier')
-        ->where('ratings.average','>',3)
-        ->orderBy('clients.id', 'DESC')->get();
+        $clients = Client::where('status','=','active')
+        ->where('role','=','supplier')
+        ->orderBy('id', 'desc')
+        ->get();
 
         return response()->json([
             'clients'=>$clients,
