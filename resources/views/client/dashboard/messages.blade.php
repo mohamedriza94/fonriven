@@ -441,8 +441,55 @@
                         });
                         
                         $(document).on('click', '#btnReply', function(e) {
-                            $("#btnView").click()
+
                             $('#replyForm').removeClass('d-none');
+                            
+                            var url = '{{ url("client/dashboard/getOneMessage/:id") }}';
+                            url = url.replace(':id', $(this).val());
+                            
+                            $.ajax({
+                                type:"GET", url:url, dataType:"json",
+                                success: function(response)
+                                {
+                                    
+                                    $('#viewDate').text("Date: "+response.messages.date);
+                                    $('#viewSubject').text("Subject: "+response.messages.subject);
+                                    $('#viewMessage').val(response.messages.message);
+                                    
+                                    messageID = response.messages.id;
+                                    messageSubject = response.messages.subject;
+                                    messageDate = response.messages.date;
+                                    
+                                    if(entity=="From")
+                                    {
+                                        var url = '{{ url("client/dashboard/getEntity/:no") }}';
+                                        url = url.replace(':no', response.messages.sender);
+                                        
+                                        $.ajax({
+                                            type:"GET", url:url, dataType:"json",
+                                            success: function(response)
+                                            {
+                                                $('#viewEntity').html(entity+" "+response.entity.name+" &nbsp; &nbsp; Sender\'s Email: "+response.entity.email);
+                                                messageEmail = response.entity.email;
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        var url = '{{ url("client/dashboard/getEntity/:no") }}';
+                                        url = url.replace(':no', response.messages.recipient);
+                                        
+                                        $.ajax({
+                                            type:"GET", url:url, dataType:"json",
+                                            success: function(response)
+                                            {
+                                                $('#viewEntity').html(entity+" "+response.entity.name+" &nbsp; &nbsp; Recipient\'s Email: "+response.entity.email);
+                                                messageEmail = response.entity.email;
+                                            }
+                                        });
+                                    }
+                                }
+                            });
                         });
                         
                         //reply section

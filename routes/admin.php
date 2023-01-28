@@ -15,7 +15,8 @@ Route::group([
             Route::get('/', 'DashboardController@index')->name('admin.dashboard');
             Route::get('supplier', 'DashboardController@supplierRequest')->name('admin.supplierRequest');
             Route::get('users', 'DashboardController@users')->name('admin.users');
-
+            Route::get('inquiries', 'DashboardController@inquiries')->name('admin.inquiries');
+            
             //supplier requests route
             Route::get('getRequests/{limit}', 'SupplierRequestController@getRequests');
             Route::post('takeActionToRequest', 'SupplierRequestController@takeActionToRequest');
@@ -25,6 +26,15 @@ Route::group([
             Route::get('getUsers/{limit}/{type}', 'UserController@getUsers');
             Route::get('searchUsers/{search}', 'UserController@searchUsers');
             Route::post('changeStatus', 'UserController@changeStatus');
+            Route::get('viewUser/{id}', 'UserController@viewUser');
+
+            //inquiries
+            Route::get('getInquiries/{limit}', 'InquiryController@getInquiries');
+            Route::get('getOneInquiry/{id}', 'InquiryController@getOneInquiry');
+            Route::post('respond', 'InquiryController@respond');
+
+            //counts
+            Route::get('counts', 'DashboardController@counts');
         });
     });
 });

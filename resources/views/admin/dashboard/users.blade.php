@@ -63,19 +63,9 @@
                                 <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
                         </div>
-                        
-                        <div class="modal-body">
-                            <ul class="bg-warning form-control px-5" id="errorList">
-                                
-                            </ul>
-                        </div>
-                        
                         <div class="modal-body" id="">
                             
                             <form class="row g-3">
-                                <input type="hidden" id="id" readonly>
-                                <input type="hidden" id="photo" readonly>
-                                
                                 <div class="col-md-3">
                                     <img class="form-control" id="photoDisplay" src="" style="height:100px; object-fit: contain;">
                                 </div>
@@ -96,16 +86,8 @@
                                 </div>
                                 
                                 <div class="col-md-4">
-                                    <label class="form-label">Request Date</label>
-                                    <input  type="email" class="form-control text-dark" id="date" readonly>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <button class="btn btn-success form-control" type="submit" id="btnAccept">Accept</button>
-                                </div>
-                                
-                                <div class="col-md-6">
-                                    <button class="btn btn-danger form-control" type="submit" id="btnDecline">Decline</button>
+                                    <label class="form-label">Joined</label>
+                                    <input  type="email" class="form-control text-dark" id="joined" readonly>
                                 </div>
                             </form>
                         </div>
@@ -283,6 +265,30 @@
                 dataType:"json",
                 success: function(response){
                     getUsers();
+                }
+            });
+        });
+        
+        //view
+        $(document).on('click', '#btnView', function(e) {
+            e.preventDefault();
+
+            var id = $(this).val();
+            
+            var url = '{{ url("admin/dashboard/viewUser/:id") }}';
+            url = url.replace(':id', id);
+            
+            $.ajax({
+                type:"GET",
+                url:url,
+                dataType:"json",
+                success: function(response)
+                {
+                    $('#photoDisplay').attr("src", response.clients.photo);
+                    $('#name').val(response.clients.name);
+                    $('#telephone').val(response.clients.telephone);
+                    $('#email').val(response.clients.email);
+                    $('#joined').val(response.clients.joined);
                 }
             });
         });

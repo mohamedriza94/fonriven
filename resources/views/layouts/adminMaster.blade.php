@@ -161,6 +161,14 @@
                         </div>
                     </a>
                 </li>
+                
+                <li class="menu {{ (\Request::route()->getName() == 'admin.inquiries') ? 'active' : '' }}">
+                    <a href="{{ route('admin.inquiries') }}" aria-expanded="false" class="dropdown-toggle">
+                        <div class="">
+                            <span class="text-capitalize"><i class="fa-solid fa-envelope" style="width:50px; height:100%;"></i>Inquiries</span>
+                        </div>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -182,7 +190,7 @@
     <!--  BEGIN FOOTER  -->
     <div class="footer-wrapper">
         <div class="footer-section f-section-1">
-            <p class="">Copyright © <span class="dynamic-year">2023</span> <a href="">LOCKHOOD</a>, All rights reserved.</p>
+            <p class="">Copyright © <span class="dynamic-year">2023</span> <a href="">FONRIVEN</a>, All rights reserved.</p>
         </div>
     </div>
     <!--  END FOOTER  -->

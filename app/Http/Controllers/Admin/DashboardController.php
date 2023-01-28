@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Inquiry;
+use App\Models\Client;
+use App\Models\Connection;
+use App\Models\SupplierRequest;
 
 class DashboardController extends Controller
 {
@@ -20,5 +24,29 @@ class DashboardController extends Controller
     public function users(Request $request)
     {
         return view('admin.dashboard.users');
+    }
+
+    public function inquiries(Request $request)
+    {
+        return view('admin.dashboard.inquiries');
+    }
+
+    public function counts()
+    {
+        $inquiries = Inquiry::where('status','=','unread')->count();
+        $users = Client::where('status','=','active')->count();
+        $supplierRequests = supplierRequest::where('status','=','pending')->count();
+        $suppliers = Client::where('status','=','active')->where('role','=','supplier')->count();
+        $buyers = Client::where('status','=','active')->where('role','=','buyer')->count();
+        $connections = Connection::where('status','=','active')->count();
+
+        return response()->json([
+            'inquiries'=>$inquiries,
+            'users'=>$users,
+            'supplierRequests'=>$supplierRequests,
+            'suppliers'=>$suppliers,
+            'buyers'=>$buyers,
+            'connections'=>$connections
+        ]);
     }
 }

@@ -35,7 +35,6 @@ class UserController extends Controller
         ]);
     }
 
-    //change Product status
     public function changeStatus(Request $request)
     {
             $clients = Client::where('id','=',$request->input('no'))->first();
@@ -45,5 +44,13 @@ class UserController extends Controller
             return response()->json([
                 'status'=>200
             ]);
+    }
+
+    public function getOneSupplier($id)
+    {
+        $clients = Client::where('id','=',$id)->first();
+        return response()->json([
+            'clients'=>$clients,
+        ]);
     }
 }
