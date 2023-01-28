@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', 'App\Http\Controllers\Client\DashboardController@index');
+Route::post('inquire', 'App\Http\Controllers\Client\MessageController@inquire');
 
 Route::group([
     'prefix'=>'client', 

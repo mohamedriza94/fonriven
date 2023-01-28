@@ -53,17 +53,14 @@
                                         </a>
                                     </li><!-- .nk-menu-item -->
                                     
-                                    
-                                    
-                                    
-                                    {{-- as a guest --}}
-                                    @guest
                                     <li class="nk-menu">
-                                        <a class="nk-menu-link">
+                                        <a data-bs-target="#modalInquiry" data-bs-toggle="modal" class="nk-menu-link">
                                             <span class="nk-menu-text">Make an Inquiry</span>
                                         </a>
                                     </li><!-- .nk-menu-item -->
-
+                                    
+                                    {{-- as a guest --}}
+                                    @guest
                                     <li class="nk-menu">
                                         <a data-bs-toggle="modal" data-bs-target="#modalSignup" class="nk-menu-link">
                                             <span class="nk-menu-text">Sign Up</span>
@@ -88,7 +85,7 @@
                                         </a>
                                     </li><!-- .nk-menu-item -->
                                     @endif
-
+                                    
                                     {{-- as a buyer --}}
                                     @if (auth()->guard('client')->user()->role == "buyer")
                                     <li class="nk-menu">
@@ -276,6 +273,79 @@
                             </div>
                             <div class="modal-footer bg-light">
                                 <span class="sub-text">Login as a Buyer or Supplier</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal fade zoom xl" tabindex="-1" id="modalInquiry">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Make an Inquiry</h5>
+                                <a href="#" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <em class="icon ni ni-cross"></em>
+                                </a>
+                            </div>
+                            <div class="modal-body">
+                                
+                                <div class="alert alert-icon alert-danger" role="alert">
+                                    <ul id="errorList_Inquiry"></ul>
+                                </div>
+                                
+                                <div class="preview-block">
+                                    <form class="row gy-4">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="form-label" for="default-01">Name</label>
+                                                <div class="form-control-wrap">
+                                                    <input type="text" class="form-control" id="inquiryName">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label class="form-label" for="default-05">Telephone</label>
+                                                <div class="form-control-wrap">
+                                                    <input type="number" class="form-control" id="inquiryTelephone">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group">
+                                                <label class="form-label" for="default-05">Email</label>
+                                                <div class="form-control-wrap">
+                                                    <input type="email" class="form-control" id="inquiryEmail">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="form-label" for="default-05">Subject</label>
+                                                <div class="form-control-wrap">
+                                                    <input type="email" class="form-control" id="inquirySubject">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-121">
+                                            <div class="form-group">
+                                                <label class="form-label" for="default-05">Message</label>
+                                                <div class="form-control-wrap">
+                                                    <textarea id="inquiryMessage" rows="5" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <div class="form-control-wrap">
+                                                    <button class="btn btn-primary text-center" id="btnInquire" type="submit">Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -487,6 +557,61 @@
                                     else
                                     {
                                         window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                        
+                        //inquiry
+                        $(document).on('click', '#btnInquire', function(e) {
+                            e.preventDefault();
+                            var inquiryName = $('#inquiryName').val();
+                            var inquiryTelephone = $('#inquiryTelephone').val();
+                            var inquiryEmail = $('#inquiryEmail').val();
+                            var inquirySubject = $('#inquirySubject').val();
+                            var inquiryMessage = $('#inquiryMessage').val();
+                            
+                            var data = {
+                                'inquiryName' : inquiryName,
+                                'inquiryTelephone' : inquiryTelephone,
+                                'inquiryEmail' : inquiryEmail,
+                                'inquirySubject' : inquirySubject,
+                                'inquiryMessage' : inquiryMessage
+                            }
+                            
+                            var url = '{{ url("inquire") }}';
+                            
+                            $.ajax({
+                                type:"POST",
+                                url: url,
+                                data:data,
+                                dataType:"json",
+                                success: function(response){
+                                    if(response.status==400)
+                                    {
+                                        $('#errorList_Inquiry').html('<li>Fill the Form</li>');
+                                        
+                                        $('#btnInquire').text('Submit');
+                                    }
+                                    else
+                                    {
+                                        $('#errorList_Inquiry').html('');
+                                        
+                                        $('#btnInquire').removeClass('btn-primary');
+                                        $('#btnInquire').addClass('btn-success');
+                                        $('#btnInquire').text('Submitted!');
+                                        
+                                        setTimeout(function(){
+                                            $('#btnInquire').removeClass('btn-success');
+                                            $('#btnInquire').addClass('btn-primary');
+                                            $('#btnInquire').text('Submit');
+                                        }, 2000);
+                                        
+                                        $('#inquiryName').val('');
+                                        $('#inquiryTelephone').val('');
+                                        $('#inquiryEmail').val('');
+                                        $('#inquirySubject').val('');
+                                        $('#inquiryMessage').val('');
                                     }
                                 }
                             });

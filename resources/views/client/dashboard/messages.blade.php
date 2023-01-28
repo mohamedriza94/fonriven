@@ -185,6 +185,7 @@
                     $(document).ready(function(){
                         
                         getRecipients();
+                        $("#btnInbox").click()
                         function getRecipients()
                         {
                             $.ajax({
