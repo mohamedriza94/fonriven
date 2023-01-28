@@ -99,32 +99,22 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <hr>
-                        
-                        <div class="col-12">
-                            <button class="btn btn-primary" type="submit" id="btnUpdateProduct"></em><span>Save Changes</span></button>
-                        </div>
                     </div>
                     
-                    {{-- tags --}}
+                    {{-- products --}}
+                    <hr class="bg-dark">
+                    <h4>Products</h4>
+                    <div class="row g-gs" id="productList">
+                        
+                    </div>
+                    
                     <hr>
-                    <h4>Tags</h4>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Tag</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tagList">
-                            
-                        </tbody>
-                    </table>
+                    
+                    <button class="btn btn-success col-12" id="btnConnect"></em><span>Connect</span></button>
                 </div>
             </div>
             <div class="modal-footer bg-light">
-                <span class="sub-text">Edit a Product from your portfolio</span>
+                <span class="sub-text">View Supplier Data before connecting</span>
             </div>
         </div>
     </div>
@@ -152,32 +142,45 @@
                     
                     $.each(response.clients,function(key,item){
                         
-                        $('#supplierList').append('<div class="col-sm-6 col-lg-4 col-xxl-3">\
-                            <div class="card card-bordered">\
-                                <div class="card-inner">\
-                                    <div class="team">\
-                                        <div class="user-card user-card-s2">\
-                                            <div class="user-avatar lg bg-primary">\
-                                                <span><img src="'+item.photo+'" alt=""></span>\
+                        var joined = item.joined.slice(0,10);
+                        
+                        //get product count
+                        var urlProduct = '{{ url("client/dashboard/getProductCount/:id") }}';
+                        urlProduct = urlProduct.replace(':id', item.id);
+                        
+                        $.ajax({
+                            type:"GET", url:urlProduct, dataType:"json",
+                            success: function(response)
+                            {
+                                $('#supplierList').append('<div class="col-sm-6 col-lg-4 col-xxl-3">\
+                                    <div class="card card-bordered">\
+                                        <div class="card-inner">\
+                                            <div class="team">\
+                                                <div class="user-card user-card-s2">\
+                                                    <div class="user-avatar lg bg-primary">\
+                                                        <span><img src="'+item.photo+'" alt=""></span>\
+                                                    </div>\
+                                                    <div class="user-info">\
+                                                        <h6>'+item.name+'</h6>\
+                                                        <span class="sub-text">Joined On: '+joined+'</span>\
+                                                    </div>\
+                                                </div>\
+                                                <ul class="team-statistics">\
+                                                    <li><span>'+response.connects+'</span><span> Connections </span></li>\
+                                                    <li><span>87.5%</span><span> Rating </span></li>\
+                                                    <li><span>'+response.products+'</span><span> Products </span></li>\
+                                                </ul>\
+                                                <div class="team-view">\
+                                                    <button value="'+item.id+'" id="btnView" data-bs-target="#modalViewProfile" data-bs-toggle="modal" class="btn btn-block btn-secondary"><span>Check</span></button>\
+                                                </div>\
                                             </div>\
-                                            <div class="user-info">\
-                                                <h6>'+item.name+'</h6>\
-                                                <span class="sub-text">Rating</span>\
-                                            </div>\
-                                        </div>\
-                                        <ul class="team-info">\
-                                            <li><span>Join Date</span><span>'+item.joined+'</span></li>\
-                                            <li><span>Contact</span><span>'+item.telephone+'</span></li>\
-                                            <li><span>Email</span><span>'+item.email+'</span></li>\
-                                        </ul>\
-                                        <div class="team-view">\
-                                            <button value="'+item.id+'" id="btnView" data-bs-target="#modalViewProfile" data-bs-toggle="modal" class="btn btn-block btn-secondary"><span>Check</span></button>\
                                         </div>\
                                     </div>\
                                 </div>\
-                            </div>\
-                        </div>\
-                        ');
+                                ');
+                                
+                            }
+                        });
                     });
                 }
             });
@@ -200,7 +203,7 @@
             }
         });
         
-        //Edit
+        //View supplier
         $(document).on('click', '#btnView', function(e) {
             
             var no = $(this).val();
@@ -220,6 +223,62 @@
                     $('#email').val(response.clients.email);
                     $('#joined').val(response.clients.joined);
                     $('#id').val(response.clients.id);
+                    
+                    var url = '{{ url("client/dashboard/getProductsForView/:id") }}';
+                    url = url.replace(':id', response.clients.id);
+                    
+                    $.ajax({
+                        type: "GET",
+                        url:url,
+                        dataType:"json",
+                        success:function(response){
+                            
+                            $('#productList').html('');
+                            
+                            $.each(response.products,function(key,item){
+                                var category = "";
+                                if(item.category == "men")
+                                {
+                                    category = 'Men\'s Clothing';
+                                }
+                                else if(item.category == "women")
+                                {
+                                    category = 'Women\'s Clothing';
+                                }
+                                else if(item.category == "unisex")
+                                {
+                                    category = 'Unisex';
+                                }
+                                else if(item.category == "kids")
+                                {
+                                    category = 'Kid\'s Clothing';
+                                }
+                                else
+                                {
+                                    category = 'Accessories';
+                                }
+                                
+                                $('#productList').append('<div class="col-xxl-3 col-lg-4 col-sm-6">\
+                                    <div class="card card-bordered product-card">\
+                                        <div class="product-thumb">\
+                                            <a>\
+                                                <img class="card-img-top" src="'+item.thumbnail+'" alt="">\
+                                            </a>\
+                                        </div>\
+                                        <div class="card-inner text-center">\
+                                            <ul class="product-tags">\
+                                                <li><a href="#">'+category+'</a></li>\
+                                            </ul>\
+                                            <h6><a class="text-dark">'+item.name+'</a></h6>\
+                                            <p class="">Wholesale Price: <b>Rs.'+item.price+'</b></p>\
+                                            <button type="button" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="top" title="'+item.description+'">Description</button>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                ');
+                            });
+                        }
+                    });
                     
                 }
             });

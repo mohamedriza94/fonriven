@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use App\Models\Tag;
+use App\Models\Connection;
 
 class ProductController extends Controller
 {
@@ -184,5 +185,25 @@ class ProductController extends Controller
                 'status'=>200
             ]);
         }
+    }
+
+    public function getProductCount($id)
+    {
+        $products = Product::where('status','=','active')->where('supplier','=',$id)->count();
+        $connects = Connection::where('status','=','active')->where('supplier','=',$id)->count();
+        
+        return response()->json([
+            'products'=>$products, 
+            'connects'=>$connects,
+        ]);
+    }
+
+    public function getProductsForView($id)
+    {
+        $products = Product::where('supplier','=',$id)->orderBy('id', 'DESC')->get();
+
+        return response()->json([
+            'products'=>$products,
+        ]);
     }
 }
