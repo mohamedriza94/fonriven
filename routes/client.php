@@ -46,7 +46,12 @@ Route::group([
             Route::get('getOneSupplier/{id}', 'SupplierController@getOneSupplier');
 
             //connections
-
+            Route::post('makeConnection', 'ConnectionController@makeConnection');
+            Route::get('viewConnections', 'ConnectionController@viewConnections');
+            Route::get('searchConnections/{search}', 'ConnectionController@searchConnections');
+            Route::get('viewOneConnection/{connectionNo}', 'ConnectionController@viewOneConnection');
+            Route::post('endConnection', 'ConnectionController@endConnection');
+            
         });
     });
 });

@@ -9,7 +9,7 @@
     <!-- Fav Icon  -->
     {{-- <link rel="shortcut icon" href="./images/favicon.png"> --}}
     <!-- Page Title  -->
-    <title>ONE DROP</title>
+    <title>FONRIVEN</title>
     <!-- StyleSheets  -->
     <link rel="stylesheet" href="{{ asset('assets/client/assets/css/dashlite.css?ver=3.0.3') }}">
     <link id="skin-default" rel="stylesheet" href="{{ asset('assets/client/assets/css/theme.css?ver=3.0.3') }}">

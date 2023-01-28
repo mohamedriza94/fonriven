@@ -55,7 +55,7 @@
                 <div class="preview-block">
                     
                     <div class="row g-3"> 
-                        <input type="hidden" id="id">
+                        <input type="hidden" id="supplier_id">
                         
                         <div class="col-sm-3">
                             <div class="form-group">
@@ -110,7 +110,9 @@
                     
                     <hr>
                     
-                    <button class="btn btn-success col-12" id="btnConnect"></em><span>Connect</span></button>
+                    @if (auth()->guard('client')->user()->role == "buyer")
+                    <button class="btn btn-success" id="btnConnect"></em><span>Connect</span></button>
+                    @endif
                 </div>
             </div>
             <div class="modal-footer bg-light">
@@ -222,7 +224,7 @@
                     $('#telephone').val(response.clients.telephone);
                     $('#email').val(response.clients.email);
                     $('#joined').val(response.clients.joined);
-                    $('#id').val(response.clients.id);
+                    $('#supplier_id').val(response.clients.id);
                     
                     var url = '{{ url("client/dashboard/getProductsForView/:id") }}';
                     url = url.replace(':id', response.clients.id);
@@ -283,6 +285,52 @@
                 }
             });
             
+        });
+        
+        //make a connection
+        $(document).on('click', '#btnConnect', function(e) {
+            e.preventDefault();
+            
+            $('#btnConnect').text('Connecting...');
+
+            var supplier = $('#supplier_id').val();
+            
+            var data = {
+                'supplier' : supplier
+            }
+            
+            $.ajax({
+                type:"POST",
+                url: '{{ url("client/dashboard/makeConnection") }}',
+                data:data,
+                dataType:"json",
+                success: function(response){
+                    if(response.status==400)
+                    {
+                        alert('Some Error. Please reload and retry');
+                        $('#btnConnect').text('Connect');
+                    }
+                    else if(response.status==404)
+                    {
+                        alert('Connection Already Exists!');
+                        $('#btnConnect').text('Connect');
+                    }
+                    else
+                    {
+                        $('#btnConnect').removeClass('btn-success');
+                        $('#btnConnect').addClass('btn-light');
+                        $('#btnConnect').text('Connected!');
+                        
+                        setTimeout(function(){
+                            $('#btnConnect').removeClass('btn-light');
+                            $('#btnConnect').addClass('btn-success');
+                            $('#btnConnect').text('Connect');
+
+                            getSupplier();
+                        }, 2000);
+                    }
+                }
+            });
         });
     });
 </script>
