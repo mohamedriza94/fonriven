@@ -137,7 +137,7 @@
             getInquiries();
         });
         
-        //read inquiries
+        //read list of inquiries
         function getInquiries()
         {
             var url = '{{ url("admin/dashboard/getInquiries/:limit") }}';
@@ -188,6 +188,7 @@
             });
         }
         
+        //open message to respond
         $(document).on('click', '#btnRespond', function(e) {
             e.preventDefault();
             
@@ -214,7 +215,7 @@
             });
         });
         
-        //view
+        //open message to just view
         $(document).on('click', '#btnView', function(e) {
             e.preventDefault();
             
@@ -241,6 +242,7 @@
             });
         });
         
+        //send a response
         $(document).on('click', '#btnSend', function(e) {
             e.preventDefault();
             

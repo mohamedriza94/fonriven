@@ -127,7 +127,7 @@
             }
         });
         
-        //call function to get factories
+        //call function to get list of requests every 2 seconds
         setInterval(() => {
             getRequests();
         }, 2000);
@@ -154,7 +154,7 @@
             
         });
         
-        //read
+        //read list of supplier requests
         function getRequests()
         {
             var url = '{{ url("admin/dashboard/getRequests/:limit") }}';
@@ -205,7 +205,7 @@
             });
         }
         
-        //Accept
+        //accept request of a supplier and pass request to create a new supplier account
         $(document).on('click', '#btnAccept', function(e) {
             
             $('#btnAccept').text('Wait...');
@@ -263,7 +263,7 @@
             });
         });
         
-        //Decline
+        //Decline request of a supplier
         $(document).on('click', '#btnDecline', function(e) {
             
             $('#btnDecline').text('Wait...');
@@ -321,7 +321,7 @@
             });
         });
         
-        //Edit
+        //view the request details
         $(document).on('click', '#btnOpen', function(e) {
             
             var id = $(this).val();

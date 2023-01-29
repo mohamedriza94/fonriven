@@ -59,11 +59,15 @@
     
     <script>
         $(document).ready(function(){
+            //call the counts method when the page loads
             counts();
+
+            //call the 'counts' method every 4 seconds
             setInterval(() => {
                 counts();
             }, 4000);
 
+            //method to get counts of each entity
             function counts()
             {
                 var url = '{{ url("admin/dashboard/counts") }}';

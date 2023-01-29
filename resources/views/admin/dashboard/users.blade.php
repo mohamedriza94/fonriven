@@ -150,7 +150,7 @@
             getUsers();
         });
         
-        //read users
+        //read list of users
         function getUsers()
         {
             var url = publicURL;
@@ -202,7 +202,7 @@
             });
         }
         
-        //search
+        //search list of users
         $("#search").keyup(function(){
             
             var length = $('#search').val().length;
@@ -219,7 +219,7 @@
             }
         });
         
-        //activate
+        //activate a user
         $(document).on('click', '#btnActivate', function(e) {
             
             e.preventDefault();
@@ -244,7 +244,7 @@
             });
         });
         
-        //deactivate
+        //deactivate a user
         $(document).on('click', '#btnDeactivate', function(e) {
             
             e.preventDefault();
@@ -269,7 +269,7 @@
             });
         });
         
-        //view
+        //view details of a single user
         $(document).on('click', '#btnView', function(e) {
             e.preventDefault();
 
