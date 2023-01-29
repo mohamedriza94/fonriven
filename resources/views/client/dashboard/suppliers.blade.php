@@ -139,7 +139,7 @@
         var publicURL = '{{ url("client/dashboard/getSupplier") }}';
         getSupplier();
         
-        //read
+        //get list of suppliers
         function getSupplier()
         {
             var url = publicURL;
@@ -200,7 +200,7 @@
             });
         }
         
-        //categorize
+        //sort suppliers by the product categories they sell
         $('#categorySearch').on('change', function() {
             if($("#categorySearch").val() == "all")
             {
@@ -215,7 +215,7 @@
             }
         });
         
-        //View supplier
+        //View details of a single supplier
         $(document).on('click', '#btnView', function(e) {
             
             var no = $(this).val();
@@ -296,7 +296,7 @@
             
         });
         
-        //make a connection
+        //for buyer to connect with a supplier
         $(document).on('click', '#btnConnect', function(e) {
             e.preventDefault();
             

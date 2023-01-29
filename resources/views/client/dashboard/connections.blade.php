@@ -181,24 +181,30 @@
 <script>
     $(document).ready(function(){
         
+        //declare public url to get list of connections from backend
         var publicURL = '{{ url("client/dashboard/viewConnections") }}';
+        
+        //calling the view connections method when the page loads
         viewConnections();
         
-        //read
+        //function to view list connections in table
         function viewConnections()
         {
+            //ajax GET request to dynamically get data from backend
             $.ajax({
                 type: "GET",
                 url:publicURL,
                 dataType:"json",
                 success:function(response){
                     
+                    //empty the table before populating it with data
                     $('#connectionList').html('');
                     
+                    //alias the array into a key called 'item'
                     $.each(response.connections,function(key,item){
                         
-                        var name = item.supplierName;
-                        var name = name.slice(0,15)+'...';
+                        //slice the length of characters before displaying
+                        var name = item.supplierName.slice(0,15)+'...';
                         
                         var status = '';
                         var button = '';
@@ -207,10 +213,12 @@
                         //check user
                         if(response.userType == "supplier")
                         {
+                            //if the logged in user is a supplier, don't display the rating button
                             rateButton = "-";
                         }
                         else
                         {
+                            //if the logged in user is a buyer, display the rating button
                             rateButton = '<button id="btnRate" data-bs-toggle="modal" data-bs-target="#modalRating" value="'+item.supplierNo+'" class="btn btn-success">Rate</button>';
                         }
                         
@@ -233,8 +241,7 @@
                             </div>';
                         }
                         
-                        
-                        
+                        //append each row of data from database into an html table
                         $('#connectionList').append('<tr>\
                             <td>\
                                 '+item.connectionNo+'\
@@ -259,20 +266,25 @@
             });
         }
         
-        //view
+        //event to view details of a single connection
         $(document).on('click', '#btnView', function(e) {
             
+            //get connection number using from the value of view button AKA btnView
             var connectionNo = $(this).val();
             
+            //declare url
             var url = '{{ url("client/dashboard/viewOneConnection/:connectionNo") }}';
+            //concatenate the connection no. into the url using the 'replace' function
             url = url.replace(':connectionNo', connectionNo);
             
+            //pass the ajax server request
             $.ajax({
                 type:"GET",
                 url:url,
                 dataType:"json",
                 success: function(response)
                 {
+                    //populate each text field with data from database
                     $('#connectionNo').val(response.connections.connectionNo);
                     $('#since').val(response.connections.connectionDate);
                     $('#status').val(response.connections.connectionStatus);
@@ -281,26 +293,31 @@
                     $('#supplierEmail').val(response.connections.supplierEmail);
                     $('#supplierName').val(response.connections.supplierName);
                     
+                    //show only 3 characters of a rating
                     var rating = response.ratings.slice(0,3);
                     
+                    //show the rating in a text field
                     $('#rating').val(rating+" / 5");
                 }
             });
             
         });
         
-        //search
+        //search a connection
         $("#searchConnection").keyup(function(){
-            
+            //get the number of characters in the search box
             var length = $('#searchConnection').val().length;
             
+            //check if the search box has any character
             if (length > 0) {
+                //if yes, concatenate the searched string into the public url and call the method to get connections
                 publicURL = '{{ url("client/dashboard/searchConnections/:search") }}';
                 publicURL = publicURL.replace(':search', $("#searchConnection").val());
                 viewConnections();
             }
             else
             {
+                ///if no, call the method with the below url
                 publicURL = '{{ url("client/dashboard/viewConnections") }}';
                 viewConnections();
             }
@@ -334,31 +351,38 @@
         //rating system
         var supplier_id = "";
         var rating = "";
+        //get the supplier id from the value of 'btnRate'
         $(document).on('click', '#btnRate', function(e) {
             supplier_id = $(this).val();
         });
         
+        //one star rating
         $(document).on('click', '#btnRateOne', function(e) {
             rating = "1";
             rateSupplier();
         });
+        //two star rating
         $(document).on('click', '#btnRateTwo', function(e) {
             rating = "2";
             rateSupplier();
         });
+        //three star rating
         $(document).on('click', '#btnRateThree', function(e) {
             rating = "3";
             rateSupplier();
         });
+        //four star rating
         $(document).on('click', '#btnRateFour', function(e) {
             rating = "4";
             rateSupplier();
         });
+        //five star rating
         $(document).on('click', '#btnRateFive', function(e) {
             rating = "5";
             rateSupplier();
         });
         
+        //function to rate a supplier
         function rateSupplier()
         {
             var data = {

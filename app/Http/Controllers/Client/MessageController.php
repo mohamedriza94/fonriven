@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 
 class MessageController extends Controller
 {
+    //for buyer to send a message to supplier or vice versa
     public function composeMessage(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -35,6 +36,7 @@ class MessageController extends Controller
             $messages->date = NOW();
             $messages->status = 'unread';
             
+            //custom path based on the sender's role
             if(auth()->guard('client')->user()->role == "supplier")
             {
                 $messages->path = 'supplierToBuyer';
@@ -54,10 +56,12 @@ class MessageController extends Controller
         }
     }
     
+    //for the logged in user to view messages belonging to him/her
     public function getMessages($type)
     {
         if(auth()->guard('client')->user()->role == "supplier")
-        {
+        {   
+            //when a supplier is logged in
             if($type=="supplierTo")
             {
                 //supplier is the sender
@@ -78,7 +82,7 @@ class MessageController extends Controller
             }
         }
         else
-        {
+        { //when a buyer is logged in
             if($type=="buyerTo")
             {
                 //buyer is the sender
@@ -101,6 +105,7 @@ class MessageController extends Controller
         
     }
     
+    //get details of the sender/recipient of a message
     public function getEntity($no)
     {
         $entity = Client::where('id','=',$no)->first();
@@ -109,6 +114,7 @@ class MessageController extends Controller
         ]);
     }
     
+    //delete a message
     public function deleteMessage(Request $request)
     {
         $messages = Message::where('id','=',$request->input('id'))->delete();
@@ -118,6 +124,7 @@ class MessageController extends Controller
         ]);
     }
     
+    //view details of a single message
     public function getOneMessage($id)
     {
         //supplier is the sender
@@ -127,6 +134,8 @@ class MessageController extends Controller
             'messages'=>$messages,
         ]);
     }
+
+    //reply to a message
     public function reply(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -146,11 +155,12 @@ class MessageController extends Controller
         }
         else
         {
+            //update message status
             $messages = Message::where('id','=',$request->input('messageID'))->first();
             $messages->status = 'read'; 
             $messages->save();
             
-            //Sending mail
+            //Sending reply via mail
             $data["recipientEmail"] = $request->input('messageEmail');
             $data["senderEmail"] = auth()->guard('client')->user()->email;
             $data["title"] = "Reply Message";
@@ -168,6 +178,8 @@ class MessageController extends Controller
             ]);
         }
     }
+
+    //for all types of users including guests to make an inquiry
     public function inquire(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -187,6 +199,7 @@ class MessageController extends Controller
         }
         else
         {
+            //save inquiry into database
             $inquiries = new Inquiry;
             $inquiries->name = $request->input('inquiryName');
             $inquiries->telephone = $request->input('inquiryTelephone');

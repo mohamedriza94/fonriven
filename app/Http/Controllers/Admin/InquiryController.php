@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class InquiryController extends Controller
 {
+    //get list of inquiries
     public function getInquiries($limit)
     {
         $inquiries = Inquiry::orderBy('id', 'DESC')->limit(6)->offSet($limit)->get();
@@ -26,6 +27,7 @@ class InquiryController extends Controller
         ]);
     }
     
+    //respond to an inquiry
     public function respond(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -45,11 +47,12 @@ class InquiryController extends Controller
         } 
         else 
         {
+            //update inquiry status as read
             $inquiries = Inquiry::where('id','=',$request->input('inquiryID'))->first();
             $inquiries->status = 'responded';
             $inquiries->save();
             
-            //Reply Mail
+            //Send a reply mail
             $data["email"] = $request->input('email');
             $data["title"] = "Inquiry Response";
             $data["subject"] = $request->input('subject');

@@ -279,7 +279,7 @@
                         var publicURL = '{{ url("client/dashboard/getProduct/:limit") }}';
                         getProduct();
                         
-                        //Add Product
+                        //add a product
                         $(document).on('click', '#btnAddProduct', function(e) {
                             e.preventDefault();
                             
@@ -326,6 +326,7 @@
                             });
                         });
                         
+                        //display the browsed and chosen thumbnail
                         $("#pThumbnail").change(function(){
                             var reader = new FileReader();
                             reader.onload = function(){
@@ -335,6 +336,7 @@
                             reader.readAsDataURL(event.target.files[0]);
                         });
                         
+                        //display the browsed and chosen thumbnail
                         $("#up_product_thumbnail").change(function(){
                             var reader = new FileReader();
                             reader.onload = function(){
@@ -366,7 +368,7 @@
                             
                         });
                         
-                        //read
+                        //get list of products
                         function getProduct()
                         {
                             var url = publicURL;
@@ -434,7 +436,7 @@
                             });
                         }
                         
-                        //activate
+                        //set product status as active
                         $(document).on('click', '#btnActivate', function(e) {
                             
                             e.preventDefault();
@@ -459,7 +461,7 @@
                             });
                         });
                         
-                        //deactivate
+                        //set product status as inactive
                         $(document).on('click', '#btnDeactivate', function(e) {
                             
                             e.preventDefault();
@@ -484,7 +486,7 @@
                             });
                         });
                         
-                        //delete
+                        //delete a product
                         $(document).on('click', '#btnDelete', function(e) {
                             
                             e.preventDefault();
@@ -508,7 +510,7 @@
                             });
                         });
                         
-                        //Edit
+                        //display details of a single product
                         $(document).on('click', '#btnEdit', function(e) {
                             
                             var no = $(this).val();
@@ -536,7 +538,7 @@
                             
                         });
                         
-                        //read tags
+                        //display list of tags under a product
                         function getTags()
                         {
                             var url = '{{ url("client/dashboard/getTags/:product") }}';
@@ -569,7 +571,7 @@
                             });
                         }
                         
-                        //search
+                        //search a product
                         $("#searchProduct").keyup(function(){
                             
                             var length = $('#searchProduct').val().length;
@@ -586,7 +588,7 @@
                             }
                         });
                         
-                        //delete tag
+                        //delete a tag
                         $(document).on('click', '#btnDeleteTag', function(e) {
                             
                             e.preventDefault();
@@ -609,7 +611,7 @@
                             });
                         });
                         
-                        //Update Product
+                        //Update a Product
                         $(document).on('click', '#btnUpdateProduct', function(e) {
                             e.preventDefault();
                             

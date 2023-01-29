@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 class SupplierRequestController extends Controller
 {
+    //read all supplier requests
     public function getRequests($limit)
     {
         $requests = SupplierRequest::orderBy('id', 'DESC')->limit(6)->offSet($limit)->get();
@@ -20,6 +21,7 @@ class SupplierRequestController extends Controller
         ]);
     }
     
+    ///view a single supplier request
     public function viewRequest($id)
     {
         $request = SupplierRequest::where('id','=',$id)->first();
@@ -28,6 +30,7 @@ class SupplierRequestController extends Controller
         ]);
     }
     
+    //accept or decline a request
     public function takeActionToRequest(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -55,22 +58,21 @@ class SupplierRequestController extends Controller
             $SupplierRequests->status = $status;
             $SupplierRequests->save();
             
-            //save supplier data
-            $password  = rand(199999,999999);
-            
-            $clients = new Client;
-            $clients->name = $request->input('name');
-            $clients->telephone = $request->input('telephone');
-            $clients->email = $request->input('email');
-            $clients->photo = $request->input('photo');
-            $clients->role = 'supplier';
-            $clients->joined = NOW();
-            $clients->status = 'active';
-            $clients->password = Hash::make($password);
-            $clients->save();
-            
             if($status == "accepted")
             {
+                //create a new supplier account
+                $password  = rand(199999,999999);
+                $clients = new Client;
+                $clients->name = $request->input('name');
+                $clients->telephone = $request->input('telephone');
+                $clients->email = $request->input('email');
+                $clients->photo = $request->input('photo');
+                $clients->role = 'supplier';
+                $clients->joined = NOW();
+                $clients->status = 'active';
+                $clients->password = Hash::make($password);
+                $clients->save();
+                
                 //Mailing Credentials
                 $data["email"] = $request->input('email');
                 $data["title"] = "Fonriven Client Credentials";

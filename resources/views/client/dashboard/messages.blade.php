@@ -184,8 +184,12 @@
                 <script>
                     $(document).ready(function(){
                         
+                        //call method to get list of recipients into select input when the page loads
                         getRecipients();
+
+                        //auto clicks the 'btnInbox' button on page load, in order to get list of received messages
                         $("#btnInbox").click()
+
                         function getRecipients()
                         {
                             $.ajax({
@@ -260,26 +264,30 @@
                             });
                         });
                         
-                        var entity = "From";
+                        var entity = "From"; //variable that assures if the message was received or sent
                         var publicURL = '';
+                        
                         //view inbox
                         $(document).on('click','#btnInbox', function(e){
-                            entity = "From";
+                            entity = "From"; //set variable as 'from' since inbox has received messages
                             
                             publicURL = '{{ url("client/dashboard/getMessages/:type") }}';
+
+                            //'type' is used to identify the message path ('supplierTo' or 'buyerTo')
                             publicURL = publicURL.replace(':type', $(this).val());
                             getMessages();
                         });
                         
-                        //view sent
+                        //view sent messages
                         $(document).on('click','#btnSent', function(e){
-                            entity = "To";
+                            entity = "To"; //set variable as 'to' since this has sent messages
                             
                             publicURL = '{{ url("client/dashboard/getMessages/:type") }}';
                             publicURL = publicURL.replace(':type', $(this).val());
                             getMessages();
                         });
                         
+                        //get list of messages
                         function getMessages()
                         {
                             $.ajax({
@@ -296,6 +304,8 @@
                                         var subject = item.subject.slice(0,20);
                                         
                                         var status = '';
+                                        
+                                        //check if message is read or unread
                                         if(item.status == 'unread')
                                         {
                                             status = '<span class="badge bg-danger">Unread</span>';
@@ -306,13 +316,17 @@
                                         }
                                         
                                         var replybutton = "";
+
+                                        //if its a received message and the status is 'unread'
                                         if(item.status == 'unread' && entity=="From")
                                         {
+                                            //then display the reply button
                                             replybutton = '<button value="'+item.id+'" data-bs-toggle="modal" data-bs-target="#modalView" id="btnReply" class="btn btn-dark">Reply</button>';
                                         }
                                         
                                         var entityName = "";
-                                        //get entity details
+
+                                        //to view details of the message sender
                                         if(entity=="From")
                                         {
                                             var url = '{{ url("client/dashboard/getEntity/:no") }}';
@@ -338,6 +352,7 @@
                                         }
                                         else
                                         {
+                                            //to view details of the message recipeint
                                             var url = '{{ url("client/dashboard/getEntity/:no") }}';
                                             url = url.replace(':no', item.recipient);
                                             
@@ -363,7 +378,7 @@
                             });
                         }
                         
-                        //delete 
+                        //delete a message 
                         $(document).on('click', '#btnDelete', function(e) {
                             
                             e.preventDefault();
@@ -386,9 +401,10 @@
                             });
                         });
                         
-                        //view 
+                        //to view details of a single message
                         $(document).on('click', '#btnView', function(e) {
                             
+                            //hide the reply form
                             $('#replyForm').addClass('d-none');
                             
                             e.preventDefault();
@@ -440,8 +456,10 @@
                             });
                         });
                         
+                        //to reply to a message
                         $(document).on('click', '#btnReply', function(e) {
 
+                            //display the reply form
                             $('#replyForm').removeClass('d-none');
                             
                             var url = '{{ url("client/dashboard/getOneMessage/:id") }}';
@@ -493,13 +511,13 @@
                         });
                         
                         //reply section
+                        //variables to store message data inorder to reply
                         var messageID = "";
                         var messageSubject = "";
                         var messageDate = "";
                         var messageEmail = "";
                         
-                        
-                        //send message
+                        //send a reply
                         $(document).on('click', '#btnSendReply', function(e) {
                             e.preventDefault();
                             $('#btnSendReply').text('Replying...');

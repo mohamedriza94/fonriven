@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    //functions to access web pages within the public website
     public function index(Request $request)
     {
         return view('client.dashboard.index');

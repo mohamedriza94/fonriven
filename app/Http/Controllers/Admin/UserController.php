@@ -8,10 +8,13 @@ use App\Models\Client;
 
 class UserController extends Controller
 {
+    //get list of users (buyers and suppliers)
     public function getUsers($limit, $type)
     {
+        
         if($type == 'all')
         {
+            //get all users
         $clients = Client::orderBy('id', 'DESC')->limit(6)->offSet($limit)->get();
         return response()->json([
             'users'=>$clients,
@@ -19,6 +22,7 @@ class UserController extends Controller
         }
         else
         {
+            //filter by role
             $clients = Client::where('role','=',$type)->orderBy('id', 'DESC')->limit(6)->offSet($limit)->get();
             return response()->json([
                 'users'=>$clients,
@@ -35,6 +39,7 @@ class UserController extends Controller
         ]);
     }
 
+    //change user status as active or inactive
     public function changeStatus(Request $request)
     {
             $clients = Client::where('id','=',$request->input('no'))->first();
@@ -46,6 +51,7 @@ class UserController extends Controller
             ]);
     }
 
+    ///get details of a single user
     public function getOneSupplier($id)
     {
         $clients = Client::where('id','=',$id)->first();

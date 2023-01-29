@@ -468,7 +468,7 @@
                             }
                         });
                         
-                        //Create Account
+                        //Sign up as a buyer or supplier
                         $(document).on('click', '#btnSignup', function(e) {
                             e.preventDefault();
                             
@@ -478,6 +478,7 @@
                             
                             var url = "";
                             
+                            //use a different url for buyer and supplier signups
                             if(role=="supplier")
                             {
                                 url = "{{ url('client/signupSupplier') }}";
@@ -487,6 +488,7 @@
                                 url = "{{ url('client/signupBuyer') }}";
                             }
                             
+                            //send ajax request
                             let formData = new FormData($('#signupForm')[0]);
                             $.ajax({
                                 type: "POST",
@@ -497,6 +499,7 @@
                                 success: function(response){
                                     if(response.status==400)
                                     {
+                                        //display list of errors
                                         $.each(response.errors,function(key,err_value){
                                             $('#errorList').append('<li>'+err_value+'</li>');
                                         });
@@ -517,6 +520,7 @@
                                             $('#btnSignup').text('Signup');
                                         }, 2000);
                                         
+                                        //empty the text fields
                                         $('#header_name').val('');
                                         $('#header_telephone').val('');
                                         $('#role').val('');
@@ -526,6 +530,7 @@
                             });
                         });
                         
+                        //display photo when browsed and selected
                         $("#editPhoto").change(function(){
                             var reader = new FileReader();
                             reader.onload = function(){
@@ -535,7 +540,7 @@
                             reader.readAsDataURL(event.target.files[0]);
                         });
                         
-                        //Edit Account
+                        //Edit account details
                         $(document).on('click', '#btnSave', function(e) {
                             e.preventDefault();
                             
@@ -550,27 +555,31 @@
                                 success: function(response){
                                     if(response.status==400)
                                     {
+                                        //display list of errors
                                         $.each(response.errors,function(key,err_value){
                                             $('#errorList_Edit').append('<li>'+err_value+'</li>');
                                         });
                                     }
                                     else
                                     {
+                                        //if edit was successful, reload the page
                                         window.location.reload();
                                     }
                                 }
                             });
                         });
                         
-                        //inquiry
+                        //make an inquiry
                         $(document).on('click', '#btnInquire', function(e) {
                             e.preventDefault();
+                            //pass data from text fields into their respective variable
                             var inquiryName = $('#inquiryName').val();
                             var inquiryTelephone = $('#inquiryTelephone').val();
                             var inquiryEmail = $('#inquiryEmail').val();
                             var inquirySubject = $('#inquirySubject').val();
                             var inquiryMessage = $('#inquiryMessage').val();
                             
+                            //pass data to ajax data container
                             var data = {
                                 'inquiryName' : inquiryName,
                                 'inquiryTelephone' : inquiryTelephone,
@@ -579,8 +588,10 @@
                                 'inquiryMessage' : inquiryMessage
                             }
                             
+                            //declare a url to send the data to backend
                             var url = '{{ url("inquire") }}';
                             
+                            //create an ajax post request to send data to backend
                             $.ajax({
                                 type:"POST",
                                 url: url,
@@ -589,12 +600,14 @@
                                 success: function(response){
                                     if(response.status==400)
                                     {
+                                        //display error if inquiry form is not fully filled
                                         $('#errorList_Inquiry').html('<li>Fill the Form</li>');
                                         
                                         $('#btnInquire').text('Submit');
                                     }
                                     else
                                     {
+                                        //empty the error list if function was succesful
                                         $('#errorList_Inquiry').html('');
                                         
                                         $('#btnInquire').removeClass('btn-primary');
@@ -607,6 +620,7 @@
                                             $('#btnInquire').text('Submit');
                                         }, 2000);
                                         
+                                        //empty the text fields
                                         $('#inquiryName').val('');
                                         $('#inquiryTelephone').val('');
                                         $('#inquiryEmail').val('');

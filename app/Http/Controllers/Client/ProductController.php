@@ -14,7 +14,7 @@ use App\Models\Connection;
 
 class ProductController extends Controller
 {
-    //Add Product
+    //for supplier to add a new product to their portfolio
     public function addProduct(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -49,11 +49,13 @@ class ProductController extends Controller
             $products->thumbnail = '/'.'storage/'.$photoPath;
             $products->save();
             
+            //insert tags to a product
             if($request->input('tag') != "")
             {
-                //insert tags
+                //explode the tag input and get each tag seperately into an array
                 $tags = explode(' ', $request->input('tag'));
                 
+                //insert each tag one by one into database
                 foreach ($tags as $tag) {
                     DB::table('tags')->insert([
                         'tag' => $tag, 'product' => $no
@@ -67,6 +69,7 @@ class ProductController extends Controller
         }
     }
 
+    //get list of products belonging to the logged in supplier's portfolio
     public function getProduct($limit)
     {
         $products = Product::where('supplier','=',auth()->guard('client')->user()->id)->orderBy('id', 'DESC')->limit(10)->offSet($limit)->get();
@@ -110,6 +113,7 @@ class ProductController extends Controller
             ]);
     }
 
+    //get details of a single product
     public function getOneProduct($no)
     {
         $products = Product::where('no','=',$no)->first();
@@ -118,6 +122,7 @@ class ProductController extends Controller
         ]);
     }
 
+    //get list of tags under each product
     public function getTags($product)
     {
         $tags = Tag::where('product','=',$product)->orderBy('id', 'DESC')->get();
@@ -126,7 +131,7 @@ class ProductController extends Controller
         ]);
     }
 
-    //delete tag
+    //delete a tag
     public function deleteTag(Request $request)
     {
             $tags = Tag::where('id','=',$request->input('no'))->delete();
@@ -136,7 +141,7 @@ class ProductController extends Controller
             ]);
     }
 
-    //update Product
+    //update a Product
     public function updateProduct(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -188,6 +193,7 @@ class ProductController extends Controller
         }
     }
 
+    //get count of products belonging to a supplier
     public function getProductCount($id)
     {
         $products = Product::where('status','=','active')->where('supplier','=',$id)->count();
@@ -201,6 +207,7 @@ class ProductController extends Controller
         ]);
     }
 
+    //get list of products under each supplier for viewing by the buyers of public
     public function getProductsForView($id)
     {
         $products = Product::where('supplier','=',$id)->orderBy('id', 'DESC')->get();

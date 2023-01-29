@@ -54,7 +54,8 @@ class LoginController extends Controller
     public function validateLogin(Request $request)
     {
         // Attempt to log the user in
-        if ($this->guard()->attempt(['email' => $request->email, 'password' => $request->password])) {
+        //conditions to be fulfilled in order to login
+        if ($this->guard()->attempt(['email' => $request->email, 'password' => $request->password, 'status' => 'active'])) {
             return redirect()->intended(route('client.dashboard'));
         } 
 

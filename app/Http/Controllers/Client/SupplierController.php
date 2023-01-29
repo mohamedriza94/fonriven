@@ -11,6 +11,7 @@ use App\Models\Client;
 
 class SupplierController extends Controller
 {
+    //get list of active suppliers 
     public function getSupplier()
     {
         $clients = Client::where('status','=','active')
@@ -23,6 +24,7 @@ class SupplierController extends Controller
         ]);
     }
 
+    //get list of trending suppliers
     public function getTrendingSuppliers()
     {
         $clients = Client::where('status','=','active')
@@ -35,6 +37,7 @@ class SupplierController extends Controller
         ]);
     }
 
+    //sort supplier by category of products they have
     public function categorizeSupplier($category)
     {
         $clients = Client::join('products','products.supplier', '=', 'clients.id')
@@ -51,6 +54,7 @@ class SupplierController extends Controller
         ]);
     }
     
+    //get details of a single supplier
     public function getOneSupplier($id)
     {
         $clients = Client::where('id','=',$id)->first();

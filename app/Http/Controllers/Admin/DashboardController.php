@@ -11,6 +11,7 @@ use App\Models\SupplierRequest;
 
 class DashboardController extends Controller
 {
+    //functions to access web pages in admin dashboard
     public function index(Request $request)
     {
         return view('admin.dashboard.index');
@@ -31,6 +32,7 @@ class DashboardController extends Controller
         return view('admin.dashboard.inquiries');
     }
 
+    //get counts of different entitites
     public function counts()
     {
         $inquiries = Inquiry::where('status','=','unread')->count();

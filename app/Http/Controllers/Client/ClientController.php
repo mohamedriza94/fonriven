@@ -34,7 +34,6 @@ class ClientController extends Controller
         else
         {
             $password  = rand(199999,999999);
-
             $clients = new Client;
             $clients->name = $request->input('name');
             $clients->telephone = $request->input('telephone');
@@ -70,7 +69,7 @@ class ClientController extends Controller
             ]);
         }
     }
-    //Create Client Account
+    //send a supplier account creation request to create a supplier account
     public function createSupplierRequest(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -152,6 +151,4 @@ class ClientController extends Controller
             ]);
         }
     }
-
-    //make a connection
 }

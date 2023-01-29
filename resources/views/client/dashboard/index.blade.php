@@ -162,7 +162,7 @@
         var publicURL = '{{ url("getTrendingSuppliers") }}';
         getSupplier();
         
-        //read
+        //get list of trending suppliers
         function getSupplier()
         {
             var url = publicURL;
@@ -223,7 +223,7 @@
             });
         }
         
-        //View supplier
+        //View details of a supplier
         $(document).on('click', '#btnView', function(e) {
             
             var no = $(this).val();
@@ -304,7 +304,7 @@
             
         });
         
-        //make a connection
+        //make a connection with a supplier
         $(document).on('click', '#btnConnect', function(e) {
             e.preventDefault();
             
