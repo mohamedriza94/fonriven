@@ -29,12 +29,12 @@ class SupplierController extends Controller
     {
         $clients = Client::where('status','=','active')
         ->where('role','=','supplier')
-        ->where('average','>','3')
+        ->where('average','>',3)
         ->orderBy('id', 'DESC')
         ->get();
         
         return response()->json([
-            'clients'=>$client,
+            'clients'=>$clients,
         ]);
     }
     
