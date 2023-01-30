@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('joined')->nullable();
             $table->string('role')->nullable();
             $table->string('status')->nullable();
-            $table->string('average')->nullable();
+            $table->double('average')->nullable();
             $table->timestamps();
         });
     }

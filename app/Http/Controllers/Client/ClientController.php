@@ -76,7 +76,7 @@ class ClientController extends Controller
             'name' => ['required'],
             'photo' => ['required','image'],
             'telephone' => ['required','unique:clients','digits_between:9,10'],
-            'email' => ['required','unique:clients','email'],
+            'email' => ['required','unique:clients','unique:supplier_requests','email'],
             'role' => ['required'],
         ]); //validate all the data
         
@@ -89,25 +89,25 @@ class ClientController extends Controller
         }
         else
         {
-            $clients = new SupplierRequest;
-            $clients->name = $request->input('name');
-            $clients->telephone = $request->input('telephone');
-            $clients->email = $request->input('email');
-            $clients->role = $request->input('role');
-            $clients->joined = NOW();
-            $clients->status = 'pending';
-            $clients->date = NOW();
+            $SupplierRequest = new SupplierRequest;
+            $SupplierRequest->name = $request->input('name');
+            $SupplierRequest->telephone = $request->input('telephone');
+            $SupplierRequest->email = $request->input('email');
+            $SupplierRequest->role = $request->input('role');
+            $SupplierRequest->joined = NOW();
+            $SupplierRequest->status = 'pending';
+            $SupplierRequest->date = NOW();
             
             If(request('photo')!="")
             {
                 $photoPath = request('photo')->store('client','public'); //get image path
-                $clients->photo = '/'.'storage/'.$photoPath;
+                $SupplierRequest->photo = '/'.'storage/'.$photoPath;
             }
             else
             {
-                $clients->photo = 'https://static.vecteezy.com/system/resources/thumbnails/002/534/006/small/social-media-chatting-online-blank-profile-picture-head-and-body-icon-people-standing-icon-grey-background-free-vector.jpg';
+                $SupplierRequest->photo = 'https://static.vecteezy.com/system/resources/thumbnails/002/534/006/small/social-media-chatting-online-blank-profile-picture-head-and-body-icon-people-standing-icon-grey-background-free-vector.jpg';
             }
-            $clients->save();
+            $SupplierRequest->save();
             
             return response()->json([
                 'status'=>200

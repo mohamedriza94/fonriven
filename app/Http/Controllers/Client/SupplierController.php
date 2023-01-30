@@ -33,14 +33,9 @@ class SupplierController extends Controller
         ->orderBy('id', 'DESC')
         ->get();
         
-        $filteredClients = $clients->filter(function ($client) {
-
-            $client->average > 3;
-
-            return response()->json([
-                'clients'=>$client,
-            ]);
-        });
+        return response()->json([
+            'clients'=>$client,
+        ]);
     }
     
     //sort supplier by category of products they have
