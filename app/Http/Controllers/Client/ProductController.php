@@ -198,7 +198,17 @@ class ProductController extends Controller
     {
         $products = Product::where('status','=','active')->where('supplier','=',$id)->count();
         $connects = Connection::where('status','=','active')->where('supplier','=',$id)->count();
+
         $ratings = Rating::where('supplier_id','=',$id)->avg('rating');
+
+        if($ratings)
+        {
+            $ratings = $ratings;
+        }
+        else
+        {
+            $ratings = 'N/A';
+        }
         
         return response()->json([
             'products'=>$products, 

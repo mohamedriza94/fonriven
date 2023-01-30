@@ -15,6 +15,5 @@ class Rating extends Model
         'supplier_id',
         'buyer_id',
         'rating',
-        'average',
     ];
 }

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedInteger('supplier_id');
             $table->unsignedInteger('buyer_id');
             $table->unsignedInteger('rating');
-            $table->double('average');
             $table->timestamps();
         });
     }

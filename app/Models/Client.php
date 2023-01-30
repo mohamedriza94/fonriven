@@ -20,6 +20,7 @@ class Client extends Authenticatable
         'role',
         'joined',
         'status',
+        'average',
     ];
 
     protected $hidden = [

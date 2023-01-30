@@ -18,25 +18,31 @@ class SupplierController extends Controller
         ->where('role','=','supplier')
         ->orderBy('id', 'DESC')
         ->get();
-
+        
         return response()->json([
             'clients'=>$clients,
         ]);
     }
-
+    
     //get list of trending suppliers
     public function getTrendingSuppliers()
     {
         $clients = Client::where('status','=','active')
         ->where('role','=','supplier')
-        ->orderBy('id', 'desc')
+        ->where('average','>','3')
+        ->orderBy('id', 'DESC')
         ->get();
+        
+        $filteredClients = $clients->filter(function ($client) {
 
-        return response()->json([
-            'clients'=>$clients,
-        ]);
+            $client->average > 3;
+
+            return response()->json([
+                'clients'=>$client,
+            ]);
+        });
     }
-
+    
     //sort supplier by category of products they have
     public function categorizeSupplier($category)
     {

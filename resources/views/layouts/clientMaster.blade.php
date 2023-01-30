@@ -152,7 +152,7 @@
                             <div class="modal-body">
                                 
                                 <div class="alert alert-icon alert-danger" role="alert">
-                                    <ul id="header_errorList"></ul>
+                                    <ul id="errorList_Signup"></ul>
                                 </div>
                                 
                                 <div class="preview-block">
@@ -178,7 +178,7 @@
                                             <div class="form-group">
                                                 <label class="form-label" for="default-05">I am a</label>
                                                 <div class="form-control-wrap">
-                                                    <select class="form-control" id="role" name="header_role" required>
+                                                    <select class="form-control" id="header_role" name="role" required>
                                                         <option value="supplier">Supplier</option>
                                                         <option value="buyer">Buyer</option>
                                                     </select>
@@ -474,7 +474,7 @@
                             
                             $('#btnSignup').text('Creating...');
                             
-                            var role = $('#role').val();
+                            var role = $('#header_role').val();
                             
                             var url = "";
                             
@@ -491,7 +491,7 @@
                             //send ajax request
                             let formData = new FormData($('#signupForm')[0]);
                             $.ajax({
-                                type: "POST",
+                                type: "post",
                                 url: url,
                                 data: formData,
                                 contentType:false,
@@ -501,14 +501,14 @@
                                     {
                                         //display list of errors
                                         $.each(response.errors,function(key,err_value){
-                                            $('#errorList').append('<li>'+err_value+'</li>');
+                                            $('#errorList_Signup').append('<li>'+err_value+'</li>');
                                         });
                                         
                                         $('#btnSignup').text('Signup');
                                     }
                                     else
                                     {
-                                        $('#errorList').html('');
+                                        $('#errorList_Signup').html('');
                                         
                                         $('#btnSignup').removeClass('btn-primary');
                                         $('#btnSignup').addClass('btn-success');

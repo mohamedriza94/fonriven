@@ -26,7 +26,7 @@ Route::group([
             Route::get('getUsers/{limit}/{type}', 'UserController@getUsers');
             Route::get('searchUsers/{search}', 'UserController@searchUsers');
             Route::post('changeStatus', 'UserController@changeStatus');
-            Route::get('viewUser/{id}', 'UserController@viewUser');
+            Route::get('viewUser/{id}', 'UserController@getOneSupplier');
 
             //inquiries
             Route::get('getInquiries/{limit}', 'InquiryController@getInquiries');

@@ -242,12 +242,11 @@ class ConnectionController extends Controller
         $ratings->supplier_id = $request->input('supplier_id');
         $ratings->buyer_id = auth()->guard('client')->user()->id;
         $ratings->rating = $request->input('rating');
-        $ratings->average = '0';
         $ratings->save();
         
         //update average
         $getAverage = Rating::where('supplier_id','=', $request->input('supplier_id'))->avg('rating');
-        $updateAverage = Rating::where('supplier_id', $request->input('supplier_id'))
+        $updateAverage = Client::where('id', $request->input('supplier_id'))
         ->update(['average' => $getAverage]);
         
         return response()->json([
